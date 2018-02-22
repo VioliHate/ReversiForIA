@@ -18,4 +18,14 @@ public class BorderMenuOverviewController {
 	public void goToPlay(){
 		main.showPlayScene();
 	}
+	
+	@FXML
+	public void goToRules() {
+		
+	}
+	
+	@FXML
+	public void goToAbout() {
+		
+	}
 }
