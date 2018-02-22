@@ -12,5 +12,9 @@ public class MenuOverviewController {
 		main.showPlayScene();
 	}
 	
+	public void goExit() {
+		System.exit(0);
+	}
+	
 	
 }

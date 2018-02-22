@@ -3,6 +3,7 @@ package it.unical.mat;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
@@ -25,6 +26,7 @@ public class Main extends Application {
 	        BorderMenuOverview();
 	        showMenuOverview();
 	        primaryStage.setResizable(false);
+	        
 	        
 	}
 
@@ -68,16 +70,18 @@ public class Main extends Application {
     	try {
     		FXMLLoader loader = new FXMLLoader();
         	loader.setLocation(Main.class.getResource("view/SplitPaneGameOverview.fxml"));
-			SplitPane play= (SplitPane) loader.load();
-			
+			final SplitPane play= (SplitPane) loader.load();
+
 			root.setCenter(play);
-		} catch (IOException e) {
+
+			
+    	} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	
     }
-    
+
     
 	public static void main(String[] args) {
 		launch(args);

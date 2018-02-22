@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.31471135940409684" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane dividerPositions="0.27424749163879597" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" scaleShape="false" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <items>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #000000;">
+    <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #000000;">
          <children>
             <Label layoutX="25.0" layoutY="14.0" prefHeight="31.0" prefWidth="118.0" text="Punteggio" textFill="#ecf9f2">
                <font>
@@ -27,7 +27,8 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-         </children></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="598.0" prefWidth="431.0" style="-fx-background-image: url('file:C:/Users/zio-j/eclipse-workspace/IaReversi/img/pokerBoard.png');" />
+         </children>
+      </AnchorPane>
+    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="598.0" prefWidth="422.0" style="-fx-background-image: url('file:C:/Users/zio-j/git/ReversiForIA/IaReversi/img/pokerBoard.png');" />
   </items>
 </SplitPane>
