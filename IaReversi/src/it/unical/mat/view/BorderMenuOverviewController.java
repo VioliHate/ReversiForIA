@@ -1,10 +1,11 @@
 package it.unical.mat.view;
 
+import java.io.IOException;
+
 import it.unical.mat.Main;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.input.InputEvent;
-import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.Pane;
 
 public class BorderMenuOverviewController {
 	private Main main;

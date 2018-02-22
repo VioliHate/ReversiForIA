@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+
+<Pane prefHeight="210.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="52.0" layoutY="14.0" prefHeight="22.0" prefWidth="146.0" text="About IaReversi">
+         <font>
+            <Font name="Franklin Gothic Heavy" size="18.0" />
+         </font>
+      </Label>
+      <Separator layoutX="25.0" layoutY="40.0" prefHeight="0.0" prefWidth="200.0" />
+      <Label layoutX="25.0" layoutY="54.0" prefHeight="58.0" prefWidth="200.0" text="Progetto di Intelligenza Aritificiale realizzato in java con l'utilizzo della libreria esterna EmbASP" wrapText="true" />
+      <Label layoutX="25.0" layoutY="119.0" prefHeight="58.0" prefWidth="171.0" text="Gruppo: MelindaFresh Domenico Violi (https://github.com/VioliHate)" wrapText="true" />
+   </children>
+</Pane>

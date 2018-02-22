@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+
+<Pane prefHeight="390.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="99.0" layoutY="14.0" prefHeight="33.0" prefWidth="52.0" text="Rules">
+         <font>
+            <Font name="Franklin Gothic Heavy" size="18.0" />
+         </font>
+      </Label>
+      <Separator layoutX="25.0" layoutY="47.0" prefWidth="200.0" />
+      <Label layoutX="21.0" layoutY="49.0" prefHeight="33.0" prefWidth="210.0" text="- inizia sempre la partita il colore nero" />
+      <Label layoutX="21.0" layoutY="69.0" prefHeight="33.0" prefWidth="210.0" text="- vince chi ha più pedine" />
+      <Label layoutX="21.0" layoutY="89.0" prefHeight="45.0" prefWidth="210.0" text="- ogni giocatore dispone di 32 pedine bianche o nere" textOverrun="WORD_ELLIPSIS" wrapText="true" />
+      <Label layoutX="21.0" layoutY="123.0" prefHeight="68.0" prefWidth="210.0" text="- il gioco inizia con 2 pedine bianche e 2 pedine nere posizionate al centro del tavolo con disposizione ad X" textOverrun="WORD_ELLIPSIS" wrapText="true" />
+      <Label layoutX="21.0" layoutY="179.0" prefHeight="78.0" prefWidth="210.0" text="- nel proprio turno il giocare può piazzare una pedina in una casella vuota con l'intento di catturare più pedine possibili" wrapText="true" />
+      <Label layoutX="21.0" layoutY="250.0" prefHeight="45.0" prefWidth="210.0" text="- le pedine catturate vengono capovolte" wrapText="true" />
+      <Label layoutX="21.0" layoutY="284.0" prefHeight="86.0" prefWidth="200.0" text="- È possibile catturare pedine in orizzontale, in verticale e in diagonale e, a ogni mossa, si possono girare pedine in una o più direzioni" wrapText="true" />
+   </children>
+</Pane>
