@@ -29,6 +29,6 @@
             </Label>
          </children>
       </AnchorPane>
-    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="598.0" prefWidth="422.0" style="-fx-background-image: url('file:C:/Users/zio-j/git/ReversiForIA/IaReversi/img/pokerBoard.png');" />
+    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="598.0" prefWidth="422.0" style="-fx-background-image: url('/pokerBoard.png');" />
   </items>
 </SplitPane>

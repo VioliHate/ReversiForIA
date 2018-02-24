@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="600.0" style="-fx-background-image: url('file:C:/Users/zio-j/git/ReversiForIA/IaReversi/img/pokerBoard.png');" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unical.mat.view.MenuOverviewController">
+<AnchorPane prefHeight="600.0" prefWidth="600.0" style="-fx-background-image: url('/pokerBoard.png');" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unical.mat.view.MenuOverviewController">
    <children>
       <Button fx:id="play" layoutX="241.0" layoutY="280.0" mnemonicParsing="false" onAction="#goToPlay" opacity="0.69" prefHeight="53.0" prefWidth="119.0" style="-fx-background-color: #184e32;" text="Play" textFill="#ecf9f2">
          <font>
