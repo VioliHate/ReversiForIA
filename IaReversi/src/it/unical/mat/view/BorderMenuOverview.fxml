@@ -21,7 +21,7 @@
             <items>
               <MenuItem mnemonicParsing="false" onAction="#goToRules" text="Rules" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="About IaReversi" />
+                  <MenuItem mnemonicParsing="false" onAction="#goToAbout" text="About IaReversi" />
             </items>
           </Menu>
         </menus>

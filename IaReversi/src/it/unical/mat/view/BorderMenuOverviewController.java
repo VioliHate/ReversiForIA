@@ -22,11 +22,11 @@ public class BorderMenuOverviewController {
 	
 	@FXML
 	public void goToRules() {
-		
+		main.showRulesScene();
 	}
 	
 	@FXML
 	public void goToAbout() {
-		
+		main.showAboutScene();
 	}
 }
