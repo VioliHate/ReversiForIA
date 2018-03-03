@@ -1,41 +1,26 @@
 package it.unical.mat.model;
 
-public class Piece {
+import javafx.scene.shape.Circle;
 
-	
-	private char color; //il colore è rappresentato da un carattere (bianco=='b' || nero=='n')
-	
+//rappresentazione dei pezzi del reversi sono dei cerchi in javafx con dimensione e tipo
 
-	//costruttore
-	public Piece(char color) {
-		
-		setColor(color);
-		
-	}
-	
-	//imposta il colore
-	public void setColor(char color) {
-		if(color=='b' || color=='n')
-			this.color=color;
-		System.out.println("colore non valido");
-	}
-	
-	
-	//ritorna colore
-	public char getColor() {
-		return color;
-	}
-	
-	//funzione flip pezzo
-	public Piece flip(Piece p) {
-		
-		if(p.getColor()=='b') {
-			p.setColor('n');
-		}
-		else {
-			p.setColor('b');
-		}
-		
-		return p;
-	}
+
+public class Piece extends Circle { //{{{
+    private PieceType type = PieceType.NONE;
+    private Piece() {} // Force all objects to use my provided constructor.
+    public Piece(int size, PieceType type) {
+        super();
+
+        int center = size / 2;
+        setType(type);
+        setCenterX(center);
+        setCenterY(center);
+        setRadius(center-5);
+    }
+    public PieceType getType() { return type; }
+    
+    public void setType(PieceType type) {
+        this.type = type;
+        setFill(type.getColor());
+    }
 }

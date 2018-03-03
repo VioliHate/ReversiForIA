@@ -1,25 +1,50 @@
 package it.unical.mat;
+
 	
 import java.io.IOException;
 
+import it.unical.mat.model.Board;
+import it.unical.mat.model.Piece;
+import it.unical.mat.model.PieceType;
+import it.unical.mat.view.TitleLabel;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 
 public class Main extends Application {
 	
+	
+    static final int BOARD_SIZE = 8;
+    static final int BOX_SIZE = 40;
+    static final int FLIP_DURATION = 500;
+
+    static int blackPiecePoints = 0;
+    static int whitePiecePoints = 0;
+
+    static final it.unical.mat.model.PieceType startingPiece = PieceType.BLACK;
+
+    static PieceType currentTurn = startingPiece;
+
+    static Board Board;
     private static Stage primaryStage;
     private static BorderPane root;
+    static TitleLabel ownerTurnLabel;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -71,18 +96,16 @@ public class Main extends Application {
     
     public static void showPlayScene() {
     	
-    	try {
-    		FXMLLoader loader = new FXMLLoader();
-        	loader.setLocation(Main.class.getResource("view/SplitPaneGameOverview.fxml"));
-			final SplitPane play= (SplitPane) loader.load();
+        FlowPane root2 = new FlowPane(Orientation.VERTICAL);
+        root2.setAlignment(Pos.CENTER);
+		ownerTurnLabel = new TitleLabel(0, true);
+		Board = new Board(BOARD_SIZE, BOX_SIZE, FLIP_DURATION);
 
-			root.setCenter(play);
-
-			
-    	} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		 root2.getChildren().addAll(ownerTurnLabel, Board);
+		 root.setCenter(root2);
+		updateOwnerTurnTitle();
+		setupClickListeners();
+		//Board.highlightValidPositions(currentTurn);
     	
     }
     
@@ -142,6 +165,91 @@ public class Main extends Application {
 		}
     	
     }
+    
+    
+    public static void setupClickListeners() { // {{{
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int column = 0; column < BOARD_SIZE; column++) {
+                final Piece currentOwner = Board.getPiece(row, column);
+
+                final int f_row = row;
+                final int f_column = column;
+
+                Board.getBox(row, column).setOnMouseClicked(event -> {
+                    if (currentOwner.getType() == PieceType.NONE && Board.isValidPosition(f_row, f_column, currentTurn)) {
+
+                        currentOwner.setType(currentTurn);
+                        Board.updateBoardForFlips(f_row, f_column);
+
+                        blackPiecePoints = 0;
+                        whitePiecePoints = 0;
+
+                        for (int i = 0; i < BOARD_SIZE; i++) {
+                            for (int j = 0; j < BOARD_SIZE; j++) {
+                                Piece t_owner = Board.getPiece(i, j);
+                                if (t_owner.getType() == PieceType.BLACK) {
+                                    blackPiecePoints++;
+                                } else if (t_owner.getType() == PieceType.WHITE) {
+                                    whitePiecePoints++;
+                                }
+                            }
+                        }
+
+                        nextTurn();
+
+                        if (Board.hasGameEnded()) {
+                            String winner = "";
+                            boolean haveTied = false;
+
+                            if (whitePiecePoints < blackPiecePoints) {
+                                winner = PieceType.BLACK.toString();
+                            } else if (whitePiecePoints > blackPiecePoints) {
+                                winner = PieceType.WHITE.toString();
+                            } else {
+                                haveTied = true;
+                            }
+
+                            ownerTurnLabel.setText(haveTied ? "Tie" : winner + " Wins");
+                        } else {
+                            //Board.highlightValidPositions(currentTurn);
+                            updateOwnerTurnTitle();
+                            if (currentTurn == PieceType.WHITE) {
+
+                                Timeline timeLine = new Timeline(new KeyFrame(Duration.millis(FLIP_DURATION), ev -> {
+                                    int positionRow = 0;
+                                    int positionCol = 0;
+                                    int count = 0;
+                                    for (int i = 0; i < BOARD_SIZE; i++) {
+                                        for (int j = 0; j < BOARD_SIZE; j++) {
+                                            if (Board.isValidPosition(i, j, PieceType.WHITE)) {
+                                                int tempCount = Board.numFlips(i, j);
+                                                if (tempCount > count) {
+                                                    count = tempCount;
+                                                    positionRow = i;
+                                                    positionCol = j;
+                                                }
+                                            }
+                                        }
+                                    }
+
+//                                    Robot.click(Board.getBox(positionRow, positionCol));
+                                }));
+                                timeLine.play();
+                            }
+                        }
+
+                    }
+                });
+            }
+        }
+    } 
+    public static void nextTurn() { 
+        currentTurn = (currentTurn == PieceType.BLACK) ? PieceType.WHITE : PieceType.BLACK;
+    }
+    public static void updateOwnerTurnTitle() { // 
+        ownerTurnLabel.setText(currentTurn + " Player's Turn");
+    } 
+
 
     
 	public static void main(String[] args) {
