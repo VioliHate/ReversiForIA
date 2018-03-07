@@ -21,7 +21,8 @@ import javafx.util.Duration;
 
 
 public class Board extends GridPane { //{{{
-    private String backgroundInHex = "#654321";
+    private String backgroundHexFirst = "#267326";
+    private String backgroundHexSecond = "#004d00";
     private int boardSize;
     private int boxSize;
     private Duration flipDuration;
@@ -50,7 +51,12 @@ public class Board extends GridPane { //{{{
             for (int j = 0; j < boardSize; j++) {
                 Pane box = new Pane();
                 Piece Piece = new Piece(boxSize, PieceType.NONE);
-                box.setStyle("-fx-background-color: " + backgroundInHex + ";");
+                if((i+j)%2==0) {
+                	box.setStyle("-fx-background-color: " + backgroundHexFirst + ";");
+                }
+                else {
+                	box.setStyle("-fx-background-color: " + backgroundHexSecond + ";");
+                }
                 box.getChildren().add(Piece);
                 setPiece(i, j, Piece);
                 setBox(i, j, box);

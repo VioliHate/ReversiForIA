@@ -1,0 +1,6 @@
+.pane{
+	-fx-background-color: #000000;
+}
+.sfondo{
+	-fx-background-image: url("../../../../img/pokerBoard.png");
+}
