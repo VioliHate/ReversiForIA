@@ -1,6 +1,7 @@
 package it.unical.mat;
 
 
+
 import java.io.IOException;
 
 import it.unical.mat.model.Board;
@@ -11,6 +12,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -18,10 +22,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -47,7 +54,8 @@ public class Main extends Application {
 	private static Stage primaryStage;
 	private static BorderPane root;
 	static TitleLabel ownerTurnLabel;
-
+	static TitleLabel displayBlackPoint;
+	static TitleLabel displayWhitePoint;
 	@Override
 	public void start(Stage primaryStage) {
 
@@ -71,7 +79,7 @@ public class Main extends Application {
 
 			// visualizza
 			Scene scene = new Scene(root);
-	        scene.getStylesheets().addAll(this.getClass().getResource("application.css").toExternalForm());
+			scene.getStylesheets().addAll(this.getClass().getResource("application.css").toExternalForm());
 
 			primaryStage.setScene(scene);
 			primaryStage.show();
@@ -100,10 +108,12 @@ public class Main extends Application {
 
 	public static void showPlayScene() {
 
-		ownerTurnLabel = new TitleLabel(0, true);
+		ownerTurnLabel = new TitleLabel(22, true);
+		displayBlackPoint=new TitleLabel(18,true);
+		displayWhitePoint=new TitleLabel(18,true);
 
 		SplitPane play= new SplitPane();
-		Pane point=new Pane();
+		GridPane point=new GridPane();
 
 		//blocco il divider
 		play.setDividerPositions(0.4);
@@ -111,8 +121,11 @@ public class Main extends Application {
 		point.minWidthProperty().bind(play.widthProperty().multiply(0.4));
 
 		//view del point
+		point.setConstraints(ownerTurnLabel, 1, 1);
+		point.setConstraints(displayBlackPoint, 1, 2);
+		point.setConstraints(displayWhitePoint, 1, 3);
 		point.getStyleClass().add("pane");
-		point.getChildren().add(ownerTurnLabel);
+		point.getChildren().addAll(ownerTurnLabel,displayBlackPoint,displayWhitePoint);
 
 
 
@@ -129,6 +142,7 @@ public class Main extends Application {
 		root.setCenter(play);
 		updateOwnerTurnTitle();
 		setupClickListeners();
+
 
 
 
@@ -199,81 +213,83 @@ public class Main extends Application {
 		for (int row = 0; row < BOARD_SIZE; row++) {
 			for (int column = 0; column < BOARD_SIZE; column++) {
 				final Piece currentOwner = Board.getPiece(row, column);
-
 				final int f_row = row;
 				final int f_column = column;
+				Board.getBox(row, column).setOnMouseClicked(event->{
 
-				Board.getBox(row, column).setOnMouseClicked(event -> {
 					if (currentOwner.getType() == PieceType.NONE && Board.isValidPosition(f_row, f_column, currentTurn)) {
 
 						currentOwner.setType(currentTurn);
 						Board.updateBoardForFlips(f_row, f_column);
-
-						System.out.println(whitePiecePoints+" punti bianchi - first");
-						System.out.println(blackPiecePoints+" punti neri - first");
-						blackPiecePoints = 0;
-						whitePiecePoints = 0;
-						for (int i = 0; i < BOARD_SIZE; i++) {
-							for (int j = 0; j < BOARD_SIZE; j++) {
-								Piece t_owner = Board.getPiece(i, j);
-								if (t_owner.getType() == PieceType.BLACK) {
-									blackPiecePoints++;
-								} else if (t_owner.getType() == PieceType.WHITE) {
-									whitePiecePoints++;
-								}
-							}
-						}
-						System.out.println(whitePiecePoints+" punti bianchi");
-						System.out.println(blackPiecePoints+" punti neri");
 						nextTurn();
+					}
+					Timeline timePoint = new Timeline(new KeyFrame(Duration.millis(FLIP_DURATION), ev -> {
+						blackPiecePoints=Board.blackCounter();
+						whitePiecePoints=Board.whiteCounter();
 
-						if (Board.hasGameEnded()) {
-							String winner = "";
-							boolean haveTied = false;
+						updatePoint(blackPiecePoints, whitePiecePoints);
 
-							if (whitePiecePoints < blackPiecePoints) {
-								winner = PieceType.BLACK.toString();
-							} else if (whitePiecePoints > blackPiecePoints) {
-								winner = PieceType.WHITE.toString();
-							} else {
-								haveTied = true;
-							}
 
-							ownerTurnLabel.setText(haveTied ? "pareggio" : winner + " vince");
-							System.out.println(winner);
+						//                                    Robot.click(Board.getBox(positionRow, positionCol));
+					}));
+
+					timePoint.play();
+
+					if (Board.hasGameEnded()) {
+
+						String winner = "";
+						boolean haveTied = false;
+
+						if (whitePiecePoints < blackPiecePoints) {
+							winner = PieceType.BLACK.toString();
+						} else if (whitePiecePoints > blackPiecePoints) {
+							winner = PieceType.WHITE.toString();
 						} else {
-							//Board.highlightValidPositions(currentTurn);
-							updateOwnerTurnTitle();
-							if (currentTurn == PieceType.WHITE) {
+							haveTied = true;
+						}
 
-								Timeline timeLine = new Timeline(new KeyFrame(Duration.millis(FLIP_DURATION), ev -> {
-									int positionRow = 0;
-									int positionCol = 0;
-									int count = 0;
-									for (int i = 0; i < BOARD_SIZE; i++) {
-										for (int j = 0; j < BOARD_SIZE; j++) {
-											if (Board.isValidPosition(i, j, PieceType.WHITE)) {
-												int tempCount = Board.numFlips(i, j);
-												if (tempCount > count) {
-													count = tempCount;
-													positionRow = i;
-													positionCol = j;
-												}
+						ownerTurnLabel.setText(haveTied ? "pareggio" : winner + " vince");
+						System.out.println(winner);
+					} else {
+						//Board.highlightValidPositions(currentTurn);
+						updateOwnerTurnTitle();
+
+						if (currentTurn == PieceType.WHITE) {
+
+							Timeline timeLine = new Timeline(new KeyFrame(Duration.millis(FLIP_DURATION), ev -> {
+								int positionRow = 0;
+								int positionCol = 0;
+								int count = 0;
+								for (int i = 0; i < BOARD_SIZE; i++) {
+									for (int j = 0; j < BOARD_SIZE; j++) {
+										if (Board.isValidPosition(i, j, PieceType.WHITE)) {
+											int tempCount = Board.numFlips(i, j);
+											if (tempCount > count) {
+												count = tempCount;
+												positionRow = i;
+												positionCol = j;
 											}
 										}
 									}
+								}
 
-									//                                    Robot.click(Board.getBox(positionRow, positionCol));
-								}));
-								timeLine.play();
 
-							}
+								//                                    Robot.click(Board.getBox(positionRow, positionCol));
+							}));
+
+							timeLine.play();
+
 						}
-
 					}
+
+
+
 				});
+
 			}
+
 		}
+
 	} 
 	public static void nextTurn() { 
 		currentTurn = (currentTurn == PieceType.BLACK) ? PieceType.WHITE : PieceType.BLACK;
@@ -282,6 +298,10 @@ public class Main extends Application {
 		ownerTurnLabel.setText(currentTurn + " Player's Turn");
 	} 
 
+	public static void updatePoint(int blackPoint,int whitePoint) {
+		displayBlackPoint.setText("Black point: "+blackPoint);
+		displayWhitePoint.setText("White point: "+whitePoint);
+	}
 
 
 	public static void main(String[] args) {

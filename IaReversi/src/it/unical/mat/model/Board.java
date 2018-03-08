@@ -248,6 +248,35 @@ public class Board extends GridPane { //{{{
 
         return false;
     }
+    
+    public int blackCounter() {
+    	int black=0;
+    	
+    	
+		for (int i = 0; i < boardSize; i++) {
+			for (int j = 0; j < boardSize; j++) {
+				
+				if (getPiece(i, j).getType()==(PieceType.BLACK))
+					black++;
+			}
+		}
+    	
+    	return black;
+    }
+    public int whiteCounter() {
+    	int white=0;
+    	
+    	
+		for (int i = 0; i < boardSize; i++) {
+			for (int j = 0; j < boardSize; j++) {
+				
+				if (getPiece(i, j).getType()==(PieceType.WHITE))
+					white++;
+			}
+		}
+    	
+    	return white;
+    }
 
     // getters
     public Pane getBox(int row, int column) {
