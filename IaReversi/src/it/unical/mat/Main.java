@@ -228,7 +228,7 @@ public class Main extends Application {
 						whitePiecePoints=Board.whiteCounter();
 
 						updatePoint(blackPiecePoints, whitePiecePoints);
-
+						Board.stampa();
 
 						//                                    Robot.click(Board.getBox(positionRow, positionCol));
 					}));

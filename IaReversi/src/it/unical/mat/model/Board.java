@@ -21,275 +21,296 @@ import javafx.util.Duration;
 
 
 public class Board extends GridPane {
-    private String backgroundHexFirst = "#267326";
-    private String backgroundHexSecond = "#004d00";
-    private int boardSize;
-    private int boxSize;
-    private Duration flipDuration;
-    private int[][] directions = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+	private String backgroundHexFirst = "#267326";
+	private String backgroundHexSecond = "#004d00";
+	private int boardSize;
+	private int boxSize;
+	private Duration flipDuration;
 
-    private Piece[][] Pieces;
-    private Pane[][] boxes;
+	private int[][] directions = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
 
-    public Board(int boardSize, int boxSize, double flipDuration) {
-        super();
+	private Piece[][] Pieces;
+	private Cell[][] cell;
 
-        Pieces = new Piece[boardSize][boardSize];
-        boxes = new Pane[boardSize][boardSize];
+	public Board(int boardSize, int boxSize, double flipDuration) {
+		super();
 
-        this.boardSize = boardSize;
-        this.boxSize = boxSize;
-        this.flipDuration = Duration.millis(flipDuration);
+		Pieces = new Piece[boardSize][boardSize];
+		cell = new Cell[boardSize][boardSize];
 
-        // setup grid constaints
-        for (int i = 0; i < boardSize; i++)
-            getRowConstraints().add( new RowConstraints(boxSize));
-        for (int i = 0; i < boardSize; i++)
-            getColumnConstraints().add( new ColumnConstraints(boxSize));
+		this.boardSize = boardSize;
+		this.boxSize = boxSize;
+		this.flipDuration = Duration.millis(flipDuration);
 
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = 0; j < boardSize; j++) {
-                Pane box = new Pane();
-                Piece Piece = new Piece(boxSize, PieceType.NONE);
-                if((i+j)%2==0) {
-                	box.setStyle("-fx-background-color: " + backgroundHexFirst + ";");
-                }
-                else {
-                	box.setStyle("-fx-background-color: " + backgroundHexSecond + ";");
-                }
-                box.getChildren().add(Piece);
-                setPiece(i, j, Piece);
-                setBox(i, j, box);
-                add(box, j, i);
-            }
-        }
+		// setup grid constraints
+		for (int i = 0; i < boardSize; i++)
+			getRowConstraints().add( new RowConstraints(boxSize));
+		for (int i = 0; i < boardSize; i++)
+			getColumnConstraints().add( new ColumnConstraints(boxSize));
 
-        int middle = boardSize/2;
-
-        Piece topLeft = getPiece(middle - 1, middle - 1);
-        Piece topRight = getPiece(middle - 1, middle);
-        Piece bottomLeft = getPiece(middle, middle - 1);
-        Piece bottomRight = getPiece(middle, middle);
-
-        topLeft.setType(PieceType.BLACK);
-        bottomRight.setType(PieceType.BLACK);
-        topRight.setType(PieceType.WHITE);
-        bottomLeft.setType(PieceType.WHITE);
-
-        setGridLinesVisible(true);
-        setAlignment(Pos.CENTER);
-    }
-
-    public boolean hasGameEnded() {
-        boolean containsBlankBox = false;
-
-        for (Piece[] row: Pieces) {
-            for (Piece Piece: row) {
-                if (Piece.getType() == PieceType.NONE)
-                    containsBlankBox = true;
-            }
-        }
-
-        return !containsBlankBox;
-    }
-
-    // flip related
-    public void updateBoardForFlips(int originalRow, int originalColumn) {
-        PieceType[][] PieceTypes = new PieceType[boardSize][boardSize];
-
-        // Setup PieceType board representation of Pieces.
-        for (int i = 0; i < boardSize; i++)
-            for (int j = 0; j < boardSize; j++)
-                PieceTypes[i][j] = getPiece(i, j).getType();
-
-        for (int[] directionGroup: directions) {
-            int rowDirection = directionGroup[0];
-            int columnDirection = directionGroup[1];
-            if (isFlipableDirection(originalRow, originalColumn, rowDirection, columnDirection, null)) {
-                flipInDirection(PieceTypes, originalRow, originalColumn, rowDirection, columnDirection);
-            }
-        }
-
-    }
-
-    public boolean isValidPosition(int row, int column, PieceType type) {
-        boolean valid = false;
-        Piece Piece = getPiece(row, column);
-        for (int[] directionGroup: directions) {
-
-                int rowDirection = directionGroup[0];
-                int columnDirection = directionGroup[1];
-                if (Piece.getType() == PieceType.NONE && isFlipableDirection(row, column, rowDirection, columnDirection, type)) {
-                    return true;
-                }
-        }
-
-        return valid;
-    }
-
-    public int numFlips(int originalRow, int originalColumn) {
-        PieceType originalPieceType = getPiece(originalRow, originalColumn).getType();
-
-        int highCount = 0;
-
-        for (int[] directionGroup: directions) {
-            int rowDirection = directionGroup[0];
-            int columnDirection = directionGroup[1];
-
-            int count = 0;
-
-            int row = originalRow + rowDirection;
-            int column = originalColumn + columnDirection;
-
-            while (row < boardSize && row >= 0 && column < boardSize && column >= 0) {
-                PieceType PieceType = getPiece(row, column).getType();
-
-                if (PieceType == PieceType.NONE || PieceType == originalPieceType) {
-                    break;
-                }
-
-                count++;
-
-                row += rowDirection;
-                column += columnDirection;
-            }
-
-            if (count > highCount) {
-                highCount = count;
-            }
-        }
-
-        return highCount;
-    }
-
-    public void flipInDirection(PieceType[][] PieceTypes, int originalRow, int originalColumn, int rowDirection, int columnDirection) {
-
-        PieceType originalPieceType = PieceTypes[originalRow][originalColumn];
-
-        int row = originalRow + rowDirection;
-        int column = originalColumn + columnDirection;
-
-        while (row < boardSize && row >= 0 && column < boardSize && column >= 0) {
-            PieceType PieceType = PieceTypes[row][column];
-
-            if (PieceType == PieceType.NONE || PieceType == originalPieceType) {
-                break;
-            }
-
-            Piece Piece = getPiece(row, column);
-
-            RotateTransition firstRotator = new RotateTransition(flipDuration, Piece);
-            firstRotator.setAxis(Rotate.Y_AXIS);
-            firstRotator.setFromAngle(0);
-            firstRotator.setToAngle(90);
-            firstRotator.setInterpolator(Interpolator.LINEAR);
-            firstRotator.setOnFinished(e -> Piece.setType(originalPieceType));
-
-            RotateTransition secondRotator = new RotateTransition(flipDuration, Piece);
-            secondRotator.setAxis(Rotate.Y_AXIS);
-            secondRotator.setFromAngle(90);
-            secondRotator.setToAngle(180);
-            secondRotator.setInterpolator(Interpolator.LINEAR);
-
-            new SequentialTransition(firstRotator, secondRotator).play();
-
-            row += rowDirection;
-            column += columnDirection;
-        }
-    }
-
-    public void highlightValidPositions(PieceType type) {
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = 0; j < boardSize; j++) {
-                Piece Piece = getPiece(i, j);
-
-                Piece.setType(Piece.getType());
-                Piece.setRadius(boxSize/2 -5);
-                Piece.setOpacity(1);
-
-                for (int[] directionGroup: directions) {
-                    int rowDirection = directionGroup[0];
-                    int columnDirection = directionGroup[1];
-
-                    if (Piece.getType() == PieceType.NONE && isFlipableDirection(i, j, rowDirection, columnDirection, type)) {
-                        Piece.setFill(Color.YELLOW);
-                        Piece.setRadius(boxSize/2 -10);
-                        Piece.setOpacity(0.2);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    public boolean isFlipableDirection(int originalRow, int originalColumn, int rowDirection, int columnDirection, PieceType optionalPieceType) {
-        // hacky way to do an optional parameter
-        PieceType originalPieceType = (optionalPieceType == null) ? getPiece(originalRow, originalColumn).getType() : optionalPieceType;
-
-        int row = originalRow + rowDirection;
-        int column = originalColumn + columnDirection;
-
-        int count = 0;
-        while (row < boardSize && row >= 0 && column < boardSize && column >= 0) {
-            Piece Piece = getPiece(row, column);
-            PieceType PieceType = Piece.getType();
-
-            if (PieceType == PieceType.NONE || Piece.getFill() == Color.YELLOW) {
-                break;
-            } else if (PieceType == originalPieceType) {
-                return count > 0;
-            }
-
-            row += rowDirection;
-            column += columnDirection;
-            count++;
-        }
-
-        return false;
-    }
-    
-    public int blackCounter() {
-    	int black=0;
-    	
-    	
 		for (int i = 0; i < boardSize; i++) {
 			for (int j = 0; j < boardSize; j++) {
-				
+				Cell box = new Cell();
+				Piece Piece = new Piece(boxSize, PieceType.NONE);
+				if((i+j)%2==0) {
+					box.setStyle("-fx-background-color: " + backgroundHexFirst + ";");
+				}
+				else {
+					box.setStyle("-fx-background-color: " + backgroundHexSecond + ";");
+				}
+				box.getChildren().add(Piece);
+				setPiece(i, j, Piece);
+				Piece.setX(i);
+				Piece.setY(j);
+				setBox(i, j, box);
+				add(box, j, i);
+				box.setX(i);
+				box.setY(j);
+			}
+		}
+
+		int middle = boardSize/2;
+
+		Piece topLeft = getPiece(middle - 1, middle - 1);
+		Piece topRight = getPiece(middle - 1, middle);
+		Piece bottomLeft = getPiece(middle, middle - 1);
+		Piece bottomRight = getPiece(middle, middle);
+
+		topLeft.setType(PieceType.BLACK);
+		bottomRight.setType(PieceType.BLACK);
+		topRight.setType(PieceType.WHITE);
+		bottomLeft.setType(PieceType.WHITE);
+
+		setGridLinesVisible(true);
+		setAlignment(Pos.CENTER);
+	}
+
+	public boolean hasGameEnded() {
+		boolean containsBlankBox = false;
+
+		for (Piece[] row: Pieces) {
+			for (Piece Piece: row) {
+				if (Piece.getType() == PieceType.NONE)
+					containsBlankBox = true;
+			}
+		}
+
+		return !containsBlankBox;
+	}
+
+	// flip related
+	public void updateBoardForFlips(int originalRow, int originalColumn) {
+		PieceType[][] PieceTypes = new PieceType[boardSize][boardSize];
+
+		// Setup PieceType board representation of Pieces.
+		for (int i = 0; i < boardSize; i++)
+			for (int j = 0; j < boardSize; j++)
+				PieceTypes[i][j] = getPiece(i, j).getType();
+
+		for (int[] directionGroup: directions) {
+			int rowDirection = directionGroup[0];
+			int columnDirection = directionGroup[1];
+			if (isFlipableDirection(originalRow, originalColumn, rowDirection, columnDirection, null)) {
+				flipInDirection(PieceTypes, originalRow, originalColumn, rowDirection, columnDirection);
+			}
+		}
+
+	}
+
+	public boolean isValidPosition(int row, int column, PieceType type) {
+		boolean valid = false;
+		Piece Piece = getPiece(row, column);
+		for (int[] directionGroup: directions) {
+
+			int rowDirection = directionGroup[0];
+			int columnDirection = directionGroup[1];
+			if (Piece.getType() == PieceType.NONE && isFlipableDirection(row, column, rowDirection, columnDirection, type)) {
+				return true;
+			}
+		}
+
+		return valid;
+	}
+
+	public int numFlips(int originalRow, int originalColumn) {
+		PieceType originalPieceType = getPiece(originalRow, originalColumn).getType();
+
+		int highCount = 0;
+
+		for (int[] directionGroup: directions) {
+			int rowDirection = directionGroup[0];
+			int columnDirection = directionGroup[1];
+
+			int count = 0;
+
+			int row = originalRow + rowDirection;
+			int column = originalColumn + columnDirection;
+
+			while (row < boardSize && row >= 0 && column < boardSize && column >= 0) {
+				PieceType PieceType = getPiece(row, column).getType();
+
+				if (PieceType == PieceType.NONE || PieceType == originalPieceType) {
+					break;
+				}
+
+				count++;
+
+				row += rowDirection;
+				column += columnDirection;
+			}
+
+			if (count > highCount) {
+				highCount = count;
+			}
+		}
+
+		return highCount;
+	}
+
+	public void flipInDirection(PieceType[][] PieceTypes, int originalRow, int originalColumn, int rowDirection, int columnDirection) {
+
+		PieceType originalPieceType = PieceTypes[originalRow][originalColumn];
+
+		int row = originalRow + rowDirection;
+		int column = originalColumn + columnDirection;
+
+		while (row < boardSize && row >= 0 && column < boardSize && column >= 0) {
+			PieceType PieceType = PieceTypes[row][column];
+
+			if (PieceType == PieceType.NONE || PieceType == originalPieceType) {
+				break;
+			}
+
+			Piece Piece = getPiece(row, column);
+
+			RotateTransition firstRotator = new RotateTransition(flipDuration, Piece);
+			firstRotator.setAxis(Rotate.Y_AXIS);
+			firstRotator.setFromAngle(0);
+			firstRotator.setToAngle(90);
+			firstRotator.setInterpolator(Interpolator.LINEAR);
+			firstRotator.setOnFinished(e -> Piece.setType(originalPieceType));
+
+			RotateTransition secondRotator = new RotateTransition(flipDuration, Piece);
+			secondRotator.setAxis(Rotate.Y_AXIS);
+			secondRotator.setFromAngle(90);
+			secondRotator.setToAngle(180);
+			secondRotator.setInterpolator(Interpolator.LINEAR);
+
+			new SequentialTransition(firstRotator, secondRotator).play();
+
+			row += rowDirection;
+			column += columnDirection;
+		}
+	}
+
+	public void highlightValidPositions(PieceType type) {
+		for (int i = 0; i < boardSize; i++) {
+			for (int j = 0; j < boardSize; j++) {
+				Piece Piece = getPiece(i, j);
+
+				Piece.setType(Piece.getType());
+				Piece.setRadius(boxSize/2 -5);
+				Piece.setOpacity(1);
+
+				for (int[] directionGroup: directions) {
+					int rowDirection = directionGroup[0];
+					int columnDirection = directionGroup[1];
+
+					if (Piece.getType() == PieceType.NONE && isFlipableDirection(i, j, rowDirection, columnDirection, type)) {
+						Piece.setFill(Color.YELLOW);
+						Piece.setRadius(boxSize/2 -10);
+						Piece.setOpacity(0.2);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	public boolean isFlipableDirection(int originalRow, int originalColumn, int rowDirection, int columnDirection, PieceType optionalPieceType) {
+		// hacky way to do an optional parameter
+		PieceType originalPieceType = (optionalPieceType == null) ? getPiece(originalRow, originalColumn).getType() : optionalPieceType;
+
+		int row = originalRow + rowDirection;
+		int column = originalColumn + columnDirection;
+
+		int count = 0;
+		while (row < boardSize && row >= 0 && column < boardSize && column >= 0) {
+			Piece Piece = getPiece(row, column);
+			PieceType PieceType = Piece.getType();
+
+			if (PieceType == PieceType.NONE || Piece.getFill() == Color.YELLOW) {
+				break;
+			} else if (PieceType == originalPieceType) {
+				return count > 0;
+			}
+
+			row += rowDirection;
+			column += columnDirection;
+			count++;
+		}
+
+		return false;
+	}
+
+	public int blackCounter() {
+		int black=0;
+
+
+		for (int i = 0; i < boardSize; i++) {
+			for (int j = 0; j < boardSize; j++) {
+
 				if (getPiece(i, j).getType()==(PieceType.BLACK))
 					black++;
 			}
 		}
-    	
-    	return black;
-    }
-    public int whiteCounter() {
-    	int white=0;
-    	
-    	
+
+		return black;
+	}
+	public int whiteCounter() {
+		int white=0;
+
+
 		for (int i = 0; i < boardSize; i++) {
 			for (int j = 0; j < boardSize; j++) {
-				
+
 				if (getPiece(i, j).getType()==(PieceType.WHITE))
 					white++;
 			}
 		}
-    	
-    	return white;
-    }
 
-    // getters
-    public Pane getBox(int row, int column) {
-        return boxes[row][column];
-    }
-    public Piece getPiece(int row, int column) {
-        return Pieces[row][column];
-    }
+		return white;
+	}
 
-    // setters
-    private void setBox(int row, int column, Pane box) {
-        boxes[row][column] = box;
-    }
-    private void setPiece(int row, int column, Piece Piece) {
-        Pieces[row][column] = Piece;
-    }
+	// getters
+	public Pane getBox(int row, int column) {
+		return cell[row][column];
+	}
+	public Piece getPiece(int row, int column) {
+		return Pieces[row][column];
+	}
+
+	// setters
+	private void setBox(int row, int column, Cell box) {
+		cell[row][column] = box;
+	}
+	private void setPiece(int row, int column, Piece Piece) {
+		Pieces[row][column] = Piece;
+	}
+
+
+	public void stampa() {
+		for(int i=0;i<boardSize;i++) {
+			for(int j=0;j<boardSize;j++) {
+				System.out.print(cell[i][j].getX()+","+cell[i][j].getY()+" | ");
+			}
+			System.out.println();
+		}
+		for(int i=0;i<boardSize;i++) {
+			for(int j=0;j<boardSize;j++) {
+				System.out.print(Pieces[i][j].getX()+","+Pieces[i][j].getY()+","+Pieces[i][j].getType().toString()+" | ");
+			}
+			System.out.println();
+		}
+	}
 }
