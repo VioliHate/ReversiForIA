@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 //enum per disctinguere i colori delle 3 tipologie di pedine
 // bianco nnero e vuoto
 
-public enum PieceType { // {{{
+public enum PieceType {
     NONE,
     WHITE,
     BLACK;
@@ -22,7 +22,7 @@ public enum PieceType { // {{{
         switch (this) {
             case WHITE: return "White";
             case BLACK: return "Black";
-            default: return "None";
+            default: return "Vuoto";
         }
     }
 }

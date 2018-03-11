@@ -20,7 +20,7 @@ import javafx.util.Duration;
  */
 
 
-public class Board extends GridPane { //{{{
+public class Board extends GridPane {
     private String backgroundHexFirst = "#267326";
     private String backgroundHexSecond = "#004d00";
     private int boardSize;
@@ -163,8 +163,7 @@ public class Board extends GridPane { //{{{
     }
 
     public void flipInDirection(PieceType[][] PieceTypes, int originalRow, int originalColumn, int rowDirection, int columnDirection) {
-        // Contract: Will not modify the contents of 'PieceTypes', because
-        // all flips will act upon the 'Pieces' array.
+
         PieceType originalPieceType = PieceTypes[originalRow][originalColumn];
 
         int row = originalRow + rowDirection;
