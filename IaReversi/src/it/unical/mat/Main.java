@@ -2,10 +2,11 @@ package it.unical.mat;
 
 
 
+import java.awt.Point;
 import java.awt.Robot;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
+import it.unical.mat.model.Artificial;
 import it.unical.mat.model.Board;
 import it.unical.mat.model.Piece;
 import it.unical.mat.model.PieceType;
@@ -13,26 +14,16 @@ import it.unical.mat.view.TitleLabel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleLongProperty;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -231,21 +222,9 @@ public class Main extends Application {
 
 						updatePoint(blackPiecePoints, whitePiecePoints);
 						
-						String mossaElaborata=new String();
-						try {
-							mossaElaborata=Board.prendereFatti();
-						} catch (Throwable e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 						
-						System.out.println(mossaElaborata);
-						
-	                           //         Robot.click(Board.getBox(positionRow, positionCol));
 					}));
-
 					timePoint.play();
-
 					if (Board.hasGameEnded()) {
 
 						String winner = "";
@@ -268,23 +247,17 @@ public class Main extends Application {
 						if (currentTurn == PieceType.WHITE) {
 
 							Timeline timeLine = new Timeline(new KeyFrame(Duration.millis(FLIP_DURATION), ev -> {
-								int positionRow = 0;
-								int positionCol = 0;
-								int count = 0;
-								for (int i = 0; i < BOARD_SIZE; i++) {
-									for (int j = 0; j < BOARD_SIZE; j++) {
-										if (Board.isValidPosition(i, j, PieceType.WHITE)) {
-											int tempCount = Board.numFlips(i, j);
-											if (tempCount > count) {
-												count = tempCount;
-												positionRow = i;
-												positionCol = j;
-											}
-										}
-									}
+								Point coordinataMossa=new Point();
+								try {
+									coordinataMossa=Board.prendereFatti();
+								} catch (Throwable e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
 								}
+								
+								System.out.println(coordinataMossa.toString());
 
-								//                                    Robot.click(Board.getBox(positionRow, positionCol));
+							                 Artificial.click(Board.getBox(coordinataMossa.x, coordinataMossa.y));
 							}));
 
 							timeLine.play();

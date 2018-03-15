@@ -1,6 +1,7 @@
 package it.unical.mat.model;
 
 
+import java.awt.Point;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -373,12 +374,12 @@ public class Board extends GridPane {
 		}
 
 	}
-	public String prendereFatti() throws Throwable {
+	public Point prendereFatti() throws Throwable {
 
-		String mossaAnswerset=new String();
 		
+
 		handler.addOption(new OptionDescriptor("-filter=posizionamento "));
-//		handler.addOption(new OptionDescriptor("-n=1 "));
+		//		handler.addOption(new OptionDescriptor("-n=1 "));
 
 
 		String fatti=new String();
@@ -398,9 +399,9 @@ public class Board extends GridPane {
 		}
 		System.out.println(fatti);
 		InputProgram inputProgram;
-			inputProgram = new ASPInputProgram(fatti);
-			inputProgram.addFilesPath("source/regole_movimento.dl");
-			handler.addProgram(inputProgram);
+		inputProgram = new ASPInputProgram(fatti);
+		inputProgram.addFilesPath("source/regole_movimento.dl");
+		handler.addProgram(inputProgram);
 
 
 		// Lancio dlv
@@ -415,17 +416,19 @@ public class Board extends GridPane {
 
 		AnswerSet as = answerSets.getAnswersets().get(0);
 		System.out.println(as.toString());
-		for (Object obj : as.getAtoms()) {
-			if (obj instanceof Place) {
-				mossaAnswerset=((Place)obj).toString();
-			}
-		}
+		
+		String mossa = as.getAnswerSet().get(0);
+		
+		String[] valori = mossa.split("[(]")[1].split("[,)]");
+		
+		System.out.println(valori[0]+","+valori[1]);
+
 		// pulisco l'handler
 		handler.removeProgram(inputProgram);
 		handler.removeOption(0);
+		handler.removeOption(1);
 
-			
-		return mossaAnswerset;
+		return new Point(Integer.parseInt(valori[0]),Integer.parseInt(valori[1]));
 	}
 
 

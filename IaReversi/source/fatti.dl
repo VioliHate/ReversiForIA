@@ -5,23 +5,4 @@ dimensione(0..7).
 coloreComputer(bianco).
 
 % colore pedina giocatore
-coloreGiocatore(nero).pedinaPresente(3,3,Black).
-pedinaPresente(3,4,White).
-pedinaPresente(4,2,Black).
-pedinaPresente(4,3,Black).
-pedinaPresente(4,4,Black).
-pedinaPresente(3,3,Black).
-pedinaPresente(3,4,White).
-pedinaPresente(4,2,Black).
-pedinaPresente(4,3,Black).
-pedinaPresente(4,4,Black).
-pedinaPresente(3,3,Black).
-pedinaPresente(3,4,White).
-pedinaPresente(4,2,Black).
-pedinaPresente(4,3,Black).
-pedinaPresente(4,4,Black).
-pedinaPresente(3,3,Black).
-pedinaPresente(3,4,White).
-pedinaPresente(4,2,Black).
-pedinaPresente(4,3,Black).
-pedinaPresente(4,4,Black).
+coloreGiocatore(nero).
