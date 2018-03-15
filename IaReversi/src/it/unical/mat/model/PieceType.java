@@ -20,8 +20,8 @@ public enum PieceType {
 
     public String toString() {
         switch (this) {
-            case WHITE: return "White";
-            case BLACK: return "Black";
+            case WHITE: return "Bianco";
+            case BLACK: return "Nero";
             default: return "Vuoto";
         }
     }

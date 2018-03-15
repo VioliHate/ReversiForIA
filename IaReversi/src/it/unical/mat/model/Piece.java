@@ -6,7 +6,7 @@ import javafx.scene.shape.Circle;
 
 //rappresentazione dei pezzi del reversi sono dei cerchi in javafx con dimensione e tipo
 
-@Id("piece")
+@Id("pedinaPresente")
 public class Piece extends Circle { 
 	
 	@Param(0)

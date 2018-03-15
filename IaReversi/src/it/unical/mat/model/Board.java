@@ -1,6 +1,25 @@
 package it.unical.mat.model;
 
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
+
+import it.unical.mat.embasp.base.Handler;
+import it.unical.mat.embasp.base.InputProgram;
+import it.unical.mat.embasp.base.OptionDescriptor;
+import it.unical.mat.embasp.base.Output;
+import it.unical.mat.embasp.languages.asp.ASPInputProgram;
+import it.unical.mat.embasp.languages.asp.ASPMapper;
+import it.unical.mat.embasp.languages.asp.AnswerSet;
+import it.unical.mat.embasp.languages.asp.AnswerSets;
+import it.unical.mat.embasp.platforms.desktop.DesktopHandler;
+import it.unical.mat.embasp.specializations.dlv.desktop.DLVDesktopService;
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
@@ -24,6 +43,7 @@ public class Board extends GridPane {
 	private String backgroundHexFirst = "#267326";
 	private String backgroundHexSecond = "#004d00";
 	private int boardSize;
+
 	private int boxSize;
 	private Duration flipDuration;
 
@@ -31,6 +51,15 @@ public class Board extends GridPane {
 
 	private Piece[][] Pieces;
 	private Cell[][] cell;
+
+
+	// DLV Classes
+	private static Handler handler;
+	private InputProgram inputProgram;
+	private OptionDescriptor od;
+	private File file;
+
+
 
 	public Board(int boardSize, int boxSize, double flipDuration) {
 		super();
@@ -83,6 +112,23 @@ public class Board extends GridPane {
 
 		setGridLinesVisible(true);
 		setAlignment(Pos.CENTER);
+
+		//DLV set
+		if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0)
+		{
+			handler = new DesktopHandler(new DLVDesktopService("source/dlv.mingw.exe"));
+		} else
+		{
+			handler = new DesktopHandler(new DLVDesktopService("source/dlv.x86-64-linux-elf-static.bin"));
+		}
+
+		inputProgram = new ASPInputProgram();
+		inputProgram.addFilesPath("source/fatti.dl");
+		handler.addProgram(inputProgram);
+
+		file = new File("fatti.dl");
+		takeClassDlv();
+
 	}
 
 	public boolean hasGameEnded() {
@@ -313,4 +359,74 @@ public class Board extends GridPane {
 			System.out.println();
 		}
 	}
+	public int getBoardSize() {
+		return boardSize;
+	}
+	public void takeClassDlv()  {
+		// Metodo che registra le classi in DLV
+		try {
+			ASPMapper.getInstance().registerClass(Piece.class);
+			ASPMapper.getInstance().registerClass(Place.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	public String prendereFatti() throws Throwable {
+
+		String mossaAnswerset=new String();
+		
+		handler.addOption(new OptionDescriptor("-filter=posizionamento "));
+//		handler.addOption(new OptionDescriptor("-n=1 "));
+
+
+		String fatti=new String();
+
+		for (int x = 0; x < boardSize; x++) {
+
+			for (int y = 0; y < boardSize; y++) {
+
+				if (Pieces[x][y] instanceof Piece) {
+					if(Pieces[x][y].getType()!=PieceType.NONE) {
+						fatti+="pedinaPresente(" + x + "," + y + ","+ Pieces[x][y].getType().toString() + ").";
+					}
+				}
+
+			}
+
+		}
+		System.out.println(fatti);
+		InputProgram inputProgram;
+			inputProgram = new ASPInputProgram(fatti);
+			inputProgram.addFilesPath("source/regole_movimento.dl");
+			handler.addProgram(inputProgram);
+
+
+		// Lancio dlv
+		Output o = handler.startSync();
+
+		// Controlli
+		AnswerSets answerSets = (AnswerSets) o;
+
+		if (answerSets.getAnswersets().size() == 0) {
+			System.out.println("niente answerset");
+		}
+
+		AnswerSet as = answerSets.getAnswersets().get(0);
+		System.out.println(as.toString());
+		for (Object obj : as.getAtoms()) {
+			if (obj instanceof Place) {
+				mossaAnswerset=((Place)obj).toString();
+			}
+		}
+		// pulisco l'handler
+		handler.removeProgram(inputProgram);
+		handler.removeOption(0);
+
+			
+		return mossaAnswerset;
+	}
+
+
 }

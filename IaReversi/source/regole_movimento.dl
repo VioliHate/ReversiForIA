@@ -1,0 +1,52 @@
+
+% posizioni occupate
+posizioneOccupata(X, Y) :- pedinaPresente(X, Y, _ ).
+
+% posizioni non occupate
+posizioneLibera(X, Y) :- not posizioneOccupata(X,Y), dimensione(X), dimensione(Y).
+
+
+%se la posizione selezionata e' sulla stessa X, Y o diagonale di un altra pedina del computer e mangia almeno una pedina e la cella è vuota
+posizioneValida(X, Y) :- posizioneLibera(X,Y), pedinaPresente(X, YComputer, C), coloreComputer(C), pedinaPresente(X, YGiocatore, Cg), coloreGiocatore(Cg), Y < YComputer, Y = YGiocatore - 1, not bucoPerXP(X, Y, YComputer).
+posizioneValida(X, Y) :- posizioneLibera(X,Y), pedinaPresente(X, YComputer, C), coloreComputer(C), pedinaPresente(X, YGiocatore, Cg), coloreGiocatore(Cg), Y > YComputer, Y = YGiocatore + 1, not bucoPerXD(X, Y, YComputer).
+posizioneValida(X, Y) :- posizioneLibera(X,Y), pedinaPresente(XComputer, Y, C), coloreComputer(C), pedinaPresente(XGiocatore, Y, Cg), coloreGiocatore(Cg), X < XComputer, X = XGiocatore - 1, not bucoPerYP(Y, X, XComputer).
+posizioneValida(X, Y) :- posizioneLibera(X,Y), pedinaPresente(XComputer, Y, C), coloreComputer(C), pedinaPresente(XGiocatore, Y, Cg), coloreGiocatore(Cg), X > XComputer, X = XGiocatore + 1, not bucoPerYD(Y, X, XComputer).
+posizioneValida(X, Y) :- posizioneLibera(X,Y), pedinaPresente(X2, Y2, C), coloreComputer(C), sullaStessaDiagonale(X, Y, X2, Y2).
+
+
+% secondo punto in alto a sinistra del primo punto
+sullaStessaDiagonale(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), X1 = X2 + K, Y1 = Y2 + K, XOY(K), XOY(X1), XOY(Y1), pedinaPresente(XGiocatore, YGiocatore, Ca), coloreGiocatore(Ca), XGiocatore = X1 - 1, YGiocatore = Y1 - 1, not bucoPerDiagonaleAS(X1, Y1, X2, Y2).
+% secondo punto in alto a destra del primo punto
+sullaStessaDiagonale(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), X1 = X2 + K, Y1 = Y2 - K, XOY(K), XOY(X1), XOY(Y1), pedinaPresente(XGiocatore, YGiocatore, Ca), coloreGiocatore(Ca), XGiocatore = X1 - 1, YGiocatore = Y1 + 1, not bucoPerDiagonaleAD(X1, Y1, X2, Y2).
+% secondo punto in basso a sinistra del primo punto
+sullaStessaDiagonale(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), X1 = X2 - K, Y1 = Y2 + K, XOY(K), XOY(X1), XOY(Y1), pedinaPresente(XGiocatore, YGiocatore, Ca), coloreGiocatore(Ca), XGiocatore = X1 + 1, YGiocatore = Y1 - 1, not bucoPerDiagonaleBS(X1, Y1, X2, Y2).
+% secondo punto in basso a destra del primo punto
+sullaStessaDiagonale(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), X1 = X2 - K, Y1 = Y2 - K, XOY(K), XOY(X1), XOY(Y1), pedinaPresente(XGiocatore, YGiocatore, Ca), coloreGiocatore(Ca), XGiocatore = X1 + 1, YGiocatore = Y1 + 1, not bucoPerDiagonaleBD(X1, Y1, X2, Y2).
+
+
+%controlla se c'è un buco tra le pedine la prima e' sempre quella dove dovra' essere inserita la pedina e la seconda e' sempre una gia' del computer
+
+bucoPerXP(X, Y1, Y2) :- pedinaPresente(X, Y2, C), coloreComputer(C), posizioneLibera(X,Y3), Y3 > Y1, Y3 < Y2, XOY(Y1).
+bucoPerXD(X, Y1, Y2) :- pedinaPresente(X, Y2, C), coloreComputer(C), posizioneLibera(X,Y3), Y3 < Y1, Y3 > Y2, XOY(Y1).
+
+bucoPerYP(Y, X1, X2) :- pedinaPresente(X2, Y, C), coloreComputer(C), posizioneLibera(X3,Y), X3 > X1, X3 < X2, XOY(X1).
+bucoPerYD(Y, X1, X2) :- pedinaPresente(X2, Y, C), coloreComputer(C), posizioneLibera(X3,Y), X3 < X1, X3 > X2, XOY(X1).
+
+% secondo punto in alto a sinistra del primo punto
+bucoPerDiagonaleAS(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), posizioneLibera(X3,Y3), X1 = X3 + K1, Y1 = Y3 + K1, X2 = X3 - K2, Y2 = Y3 - K2, XOY(K1), XOY(K2), XOY(X1), XOY(Y1).
+% secondo punto in alto a destra del primo punto
+bucoPerDiagonaleAD(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), posizioneLibera(X3,Y3), X1 = X3 + K1, Y1 = Y3 - K1, X2 = X3 - K2, Y2 = Y3 + K2, XOY(K1), XOY(K2), XOY(X1), XOY(Y1).
+% secondo punto in basso a sinistra del primo punto
+bucoPerDiagonaleBS(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), posizioneLibera(X3,Y3), X1 = X3 - K1, Y1 = Y3 + K1, X2 = X3 + K2, Y2 = Y3 - K2, XOY(K1), XOY(K2), XOY(X1), XOY(Y1).
+% secondo punto in basso a destra del primo punto
+bucoPerDiagonaleBD(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), posizioneLibera(X3,Y3), X1 = X3 - K1, Y1 = Y3 - K1, X2 = X3 + K2, Y2 = Y3 + K2, XOY(K1), XOY(K2), XOY(X1), XOY(Y1).
+
+
+
+% Guess posizioneScelta indica la posizione scelta dal computer
+posizionamento(X, Y) v NonPosizionamento(X, Y) :- posizioneValida(X, Y).
+
+
+
+% Check ci deve essere un solo atomo ground di posizioneScelta
+:- not #count{X, Y : posizionamento(X, Y)} = 1.

@@ -4,13 +4,11 @@ import it.unical.mat.embasp.languages.Id;
 import it.unical.mat.embasp.languages.Param;
 import javafx.scene.layout.Pane;
 
-@Id("cell")
+
 
 public class Cell extends Pane{
 
-	@Param(0)
 	int x;
-	@Param(1)
 	int y;
 	
 	

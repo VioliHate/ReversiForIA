@@ -4,7 +4,7 @@ import it.unical.mat.embasp.languages.Id;
 import it.unical.mat.embasp.languages.Param;
 
 //gestore del posizionamento della pedina
-@Id("place")
+@Id("posizionamento")
 public class Place {
 
 
@@ -16,31 +16,23 @@ public class Place {
 	@Param(1)
 	private int pieceY;
 
-	// Coordinata X della nuova cella in cui posizionare la pedina
-	@Param(2)
-	private int placeX;
-
-	// Coordinata Y della nuova cella in cui posizionare la pedina
-	@Param(3)
-	private int placeY;
 
 	public Place() {
 
 	}
 
-	public Place(int pieceX, int pieceY, int placeX, int placeY) {
+	public Place(int pieceX, int pieceY) {
 
 		this.pieceX = pieceX;
 		this.pieceY = pieceY;
-		this.placeX = placeX;
-		this.placeY = placeY;
+
 
 	}
 
 	@Override
 	public String toString() {
 
-		return "Move( " + getPieceX() + " , " + getPieceX() + " , " + getPieceX() + " , " + getPieceY() + ")";
+		return "Move( " + getPieceX() + " , " + getPieceY() + ")";
 
 	}
 
@@ -56,25 +48,7 @@ public class Place {
 		return pieceY;
 	}
 
-	public void setPieceY(int pieceY) {
-		this.pieceY = pieceY;
-	}
 
-	public int getPlaceX() {
-		return placeX;
-	}
-
-	public void setPlaceX(int placeX) {
-		this.placeX =  placeX;
-	}
-
-	public int getPlaceY() {
-		return placeY;
-	}
-
-	public void setPlaceY(int placeY) {
-		this.placeY = placeY;
-	}
 
 }
 

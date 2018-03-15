@@ -2,7 +2,9 @@ package it.unical.mat;
 
 
 
+import java.awt.Robot;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import it.unical.mat.model.Board;
 import it.unical.mat.model.Piece;
@@ -209,7 +211,7 @@ public class Main extends Application {
 	}
 
 
-	public static void setupClickListeners() { // {{{
+	public static void setupClickListeners() throws SecurityException { // {{{
 		for (int row = 0; row < BOARD_SIZE; row++) {
 			for (int column = 0; column < BOARD_SIZE; column++) {
 				final Piece currentOwner = Board.getPiece(row, column);
@@ -228,9 +230,18 @@ public class Main extends Application {
 						whitePiecePoints=Board.whiteCounter();
 
 						updatePoint(blackPiecePoints, whitePiecePoints);
-						Board.stampa();
-
-						//                                    Robot.click(Board.getBox(positionRow, positionCol));
+						
+						String mossaElaborata=new String();
+						try {
+							mossaElaborata=Board.prendereFatti();
+						} catch (Throwable e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						System.out.println(mossaElaborata);
+						
+	                           //         Robot.click(Board.getBox(positionRow, positionCol));
 					}));
 
 					timePoint.play();
@@ -273,7 +284,6 @@ public class Main extends Application {
 									}
 								}
 
-
 								//                                    Robot.click(Board.getBox(positionRow, positionCol));
 							}));
 
@@ -303,6 +313,7 @@ public class Main extends Application {
 		displayWhitePoint.setText("White point: "+whitePoint);
 	}
 
+	
 
 	public static void main(String[] args) {
 		launch(args);

@@ -1,0 +1,27 @@
+%dimensione board
+dimensione(0..7).
+
+% colore pedina del computer
+coloreComputer(bianco).
+
+% colore pedina giocatore
+coloreGiocatore(nero).pedinaPresente(3,3,Black).
+pedinaPresente(3,4,White).
+pedinaPresente(4,2,Black).
+pedinaPresente(4,3,Black).
+pedinaPresente(4,4,Black).
+pedinaPresente(3,3,Black).
+pedinaPresente(3,4,White).
+pedinaPresente(4,2,Black).
+pedinaPresente(4,3,Black).
+pedinaPresente(4,4,Black).
+pedinaPresente(3,3,Black).
+pedinaPresente(3,4,White).
+pedinaPresente(4,2,Black).
+pedinaPresente(4,3,Black).
+pedinaPresente(4,4,Black).
+pedinaPresente(3,3,Black).
+pedinaPresente(3,4,White).
+pedinaPresente(4,2,Black).
+pedinaPresente(4,3,Black).
+pedinaPresente(4,4,Black).
