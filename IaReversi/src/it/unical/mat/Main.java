@@ -15,9 +15,11 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -49,6 +51,7 @@ public class Main extends Application {
 	static TitleLabel ownerTurnLabel;
 	static TitleLabel displayBlackPoint;
 	static TitleLabel displayWhitePoint;
+	static Button passaTurno;
 	@Override
 	public void start(Stage primaryStage) {
 
@@ -104,21 +107,22 @@ public class Main extends Application {
 		ownerTurnLabel = new TitleLabel(22, true);
 		displayBlackPoint=new TitleLabel(18,true);
 		displayWhitePoint=new TitleLabel(18,true);
-
+		passaTurno=new Button("passa il turno");
 		SplitPane play= new SplitPane();
 		GridPane point=new GridPane();
-
 		//blocco il divider
 		play.setDividerPositions(0.4);
 		point.maxWidthProperty().bind(play.widthProperty().multiply(0.4));
 		point.minWidthProperty().bind(play.widthProperty().multiply(0.4));
 
+		
 		//view del point
 		point.setConstraints(ownerTurnLabel, 1, 1);
 		point.setConstraints(displayBlackPoint, 1, 2);
 		point.setConstraints(displayWhitePoint, 1, 3);
+		point.setConstraints(passaTurno, 1, 4);
 		point.getStyleClass().add("pane");
-		point.getChildren().addAll(ownerTurnLabel,displayBlackPoint,displayWhitePoint);
+		point.getChildren().addAll(ownerTurnLabel,displayBlackPoint,displayWhitePoint,passaTurno);
 
 
 
@@ -202,7 +206,8 @@ public class Main extends Application {
 	}
 
 
-	public static void setupClickListeners() throws SecurityException { // {{{
+	public static void setupClickListeners() throws SecurityException { 
+		updateOwnerTurnTitle();
 		for (int row = 0; row < BOARD_SIZE; row++) {
 			for (int column = 0; column < BOARD_SIZE; column++) {
 				final Piece currentOwner = Board.getPiece(row, column);
@@ -239,7 +244,6 @@ public class Main extends Application {
 						}
 
 						ownerTurnLabel.setText(haveTied ? "pareggio" : winner + " vince");
-						System.out.println(winner);
 					} else {
 						//Board.highlightValidPositions(currentTurn);
 						updateOwnerTurnTitle();
@@ -256,22 +260,28 @@ public class Main extends Application {
 								}
 								
 								System.out.println(coordinataMossa.toString());
-
+								if(coordinataMossa.x!=-3 && coordinataMossa.y!=-3)
 							                 Artificial.click(Board.getBox(coordinataMossa.x, coordinataMossa.y));
+								else {
+									currentOwner.setType(currentTurn);
+									Board.updateBoardForFlips(f_row, f_column);
+									nextTurn();
+								}
 							}));
 
 							timeLine.play();
 
 						}
 					}
-
-
-
+					passaTurno.setOnMouseClicked(event3->{
+						nextTurn();
+					});
 				});
 
 			}
 
 		}
+
 
 	} 
 	public static void nextTurn() { 
@@ -282,8 +292,8 @@ public class Main extends Application {
 	} 
 
 	public static void updatePoint(int blackPoint,int whitePoint) {
-		displayBlackPoint.setText("Black point: "+blackPoint);
-		displayWhitePoint.setText("White point: "+whitePoint);
+		displayBlackPoint.setText("punti nero: "+blackPoint);
+		displayWhitePoint.setText("punti bianco: "+whitePoint);
 	}
 
 	

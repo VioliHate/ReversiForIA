@@ -412,6 +412,7 @@ public class Board extends GridPane {
 
 		if (answerSets.getAnswersets().size() == 0) {
 			System.out.println("niente answerset");
+			return new Point(-3,-3);
 		}
 
 		AnswerSet as = answerSets.getAnswersets().get(0);
