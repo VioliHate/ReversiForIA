@@ -208,13 +208,13 @@ public class Main extends Application {
 
 	public static void setupClickListeners() throws SecurityException { 
 		updateOwnerTurnTitle();
+
 		for (int row = 0; row < BOARD_SIZE; row++) {
 			for (int column = 0; column < BOARD_SIZE; column++) {
 				final Piece currentOwner = Board.getPiece(row, column);
 				final int f_row = row;
 				final int f_column = column;
 				Board.getBox(row, column).setOnMouseClicked(event->{
-
 					if (currentOwner.getType() == PieceType.NONE && Board.isValidPosition(f_row, f_column, currentTurn)) {
 
 						currentOwner.setType(currentTurn);
@@ -246,7 +246,7 @@ public class Main extends Application {
 
 						ownerTurnLabel.setText(haveTied ? "pareggio" : winner + " vince");
 					} else {
-						//Board.highlightValidPositions(currentTurn);
+						Board.highlightValidPositions(currentTurn);
 						updateOwnerTurnTitle();
 						whiteTurn();
 					}
@@ -258,6 +258,7 @@ public class Main extends Application {
 					whiteTurn();
 				});
 			}
+
 
 		}
 
