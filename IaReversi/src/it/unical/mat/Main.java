@@ -230,6 +230,7 @@ public class Main extends Application {
 						
 					}));
 					timePoint.play();
+
 					if (Board.hasGameEnded()) {
 
 						String winner = "";
@@ -247,37 +248,15 @@ public class Main extends Application {
 					} else {
 						//Board.highlightValidPositions(currentTurn);
 						updateOwnerTurnTitle();
-
-						if (currentTurn == PieceType.WHITE) {
-
-							Timeline timeLine = new Timeline(new KeyFrame(Duration.millis(FLIP_DURATION), ev -> {
-								Point coordinataMossa=new Point();
-								try {
-									coordinataMossa=Board.prendereFatti();
-								} catch (Throwable e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								
-								System.out.println(coordinataMossa.toString());
-								if(coordinataMossa.x!=-3 && coordinataMossa.y!=-3)
-							                 Artificial.click(Board.getBox(coordinataMossa.x, coordinataMossa.y));
-								else {
-									currentOwner.setType(currentTurn);
-									Board.updateBoardForFlips(f_row, f_column);
-									nextTurn();
-								}
-							}));
-
-							timeLine.play();
-
-						}
+						whiteTurn();
 					}
-					passaTurno.setOnMouseClicked(event3->{
-						nextTurn();
-					});
-				});
 
+				});
+				passaTurno.setOnMouseClicked(event3->{
+					nextTurn();
+					updateOwnerTurnTitle();
+					whiteTurn();
+				});
 			}
 
 		}
@@ -296,7 +275,32 @@ public class Main extends Application {
 		displayWhitePoint.setText("punti bianco: "+whitePoint);
 	}
 
-	
+	public static void whiteTurn() {
+		
+		if (currentTurn == PieceType.WHITE) {
+
+			Timeline timeLine = new Timeline(new KeyFrame(Duration.millis(FLIP_DURATION), ev -> {
+				Point coordinataMossa=new Point();
+				try {
+					coordinataMossa=Board.prendereFatti();
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				System.out.println(coordinataMossa.toString());
+				if(coordinataMossa.x!=-3 && coordinataMossa.y!=-3)
+			                 Artificial.click(Board.getBox(coordinataMossa.x, coordinataMossa.y));
+				else {
+					nextTurn();
+					updateOwnerTurnTitle();
+				}
+			}));
+
+			timeLine.play();
+
+		}
+	}
 
 	public static void main(String[] args) {
 		launch(args);
