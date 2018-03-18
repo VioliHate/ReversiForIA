@@ -263,6 +263,11 @@ public class Main extends Application {
 						ownerTurnLabel.setText(haveTied ? "pareggio" : winner + " vince");
 					} else {
 						Timeline humanHint = new Timeline(new KeyFrame(Duration.millis(FLIP_DURATION), ev -> {
+							
+							/*
+							 * per vedere le mosse suggerite al bianco
+								Board.hintValidPositions(currentTurn);
+							*/
 							if(currentTurn == PieceType.BLACK) {
 								if(Board.hintValidPositions(currentTurn)==0) {
 									showPassTurn();
