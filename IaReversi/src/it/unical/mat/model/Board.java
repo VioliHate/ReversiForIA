@@ -35,7 +35,7 @@ import javafx.util.Duration;
 
 /*
  *  Questa classe rappresenta la tavola di gioco 8x8 di reversi
- * 
+ *  dimensione da 0 a 7
  * 
  */
 
@@ -72,7 +72,7 @@ public class Board extends GridPane {
 		this.boxSize = boxSize;
 		this.flipDuration = Duration.millis(flipDuration);
 
-		// setup grid constraints
+		// creazione della board e posizionamento delle 4 pedine di inizio gioco
 		for (int i = 0; i < boardSize; i++)
 			getRowConstraints().add( new RowConstraints(boxSize));
 		for (int i = 0; i < boardSize; i++)
@@ -164,6 +164,7 @@ public class Board extends GridPane {
 
 	}
 
+	//check controllo posizione valida
 	public boolean isValidPosition(int row, int column, PieceType type) {
 		boolean valid = false;
 		Piece Piece = getPiece(row, column);
@@ -179,6 +180,7 @@ public class Board extends GridPane {
 		return valid;
 	}
 
+	//
 	public int numFlips(int originalRow, int originalColumn) {
 		PieceType originalPieceType = getPiece(originalRow, originalColumn).getType();
 
@@ -250,7 +252,9 @@ public class Board extends GridPane {
 		}
 	}
 
-	public void highlightValidPositions(PieceType type) {
+	//suggerimento mossa
+	public int hintValidPositions(PieceType type) {
+		int countHint=0;
 		for (int i = 0; i < boardSize; i++) {
 			for (int j = 0; j < boardSize; j++) {
 				Piece Piece = getPiece(i, j);
@@ -264,6 +268,7 @@ public class Board extends GridPane {
 					int columnDirection = directionGroup[1];
 
 					if (Piece.getType() == PieceType.NONE && isFlipableDirection(i, j, rowDirection, columnDirection, type)) {
+						countHint++;
 						Piece.setFill(Color.YELLOW);
 						Piece.setRadius(boxSize/2 -10);
 						Piece.setOpacity(0.2);
@@ -272,10 +277,12 @@ public class Board extends GridPane {
 				}
 			}
 		}
+		return countHint;
 	}
+	
 
 	public boolean isFlipableDirection(int originalRow, int originalColumn, int rowDirection, int columnDirection, PieceType optionalPieceType) {
-		// hacky way to do an optional parameter
+	
 		PieceType originalPieceType = (optionalPieceType == null) ? getPiece(originalRow, originalColumn).getType() : optionalPieceType;
 
 		int row = originalRow + rowDirection;

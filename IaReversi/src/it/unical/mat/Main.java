@@ -14,12 +14,14 @@ import it.unical.mat.view.TitleLabel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -51,7 +53,13 @@ public class Main extends Application {
 	static TitleLabel ownerTurnLabel;
 	static TitleLabel displayBlackPoint;
 	static TitleLabel displayWhitePoint;
+
+	/*
+	 * serve per il test del passa turno
+	 * 
 	static Button passaTurno;
+	 *
+	 */
 	@Override
 	public void start(Stage primaryStage) {
 
@@ -107,7 +115,10 @@ public class Main extends Application {
 		ownerTurnLabel = new TitleLabel(22, true);
 		displayBlackPoint=new TitleLabel(18,true);
 		displayWhitePoint=new TitleLabel(18,true);
-		passaTurno=new Button("passa il turno");
+
+		//passaTurno=new Button("passa il turno");
+
+
 		SplitPane play= new SplitPane();
 		GridPane point=new GridPane();
 		//blocco il divider
@@ -115,14 +126,18 @@ public class Main extends Application {
 		point.maxWidthProperty().bind(play.widthProperty().multiply(0.4));
 		point.minWidthProperty().bind(play.widthProperty().multiply(0.4));
 
-		
+
 		//view del point
 		point.setConstraints(ownerTurnLabel, 1, 1);
 		point.setConstraints(displayBlackPoint, 1, 2);
 		point.setConstraints(displayWhitePoint, 1, 3);
-		point.setConstraints(passaTurno, 1, 4);
+
+
+		//point.setConstraints(passaTurno, 1, 4);
+
 		point.getStyleClass().add("pane");
-		point.getChildren().addAll(ownerTurnLabel,displayBlackPoint,displayWhitePoint,passaTurno);
+		point.getChildren().addAll(ownerTurnLabel,displayBlackPoint,displayWhitePoint);
+		//point.getChildren().addAll(ownerTurnLabel,displayBlackPoint,displayWhitePoint,passaTurno);
 
 
 
@@ -155,7 +170,7 @@ public class Main extends Application {
 			loader.setLocation(Main.class.getResource("view/RulesOverview.fxml"));
 			final Pane play= (Pane) loader.load();
 
-			//visualizza il Pane inn una finestra secondaria
+			//visualizza il Pane in una finestra secondaria
 			Scene secondaryScene = new Scene(play, 250, 390);
 			Stage secondaryStage = new Stage();
 			secondaryStage.setTitle("Rules");
@@ -185,7 +200,7 @@ public class Main extends Application {
 			loader.setLocation(Main.class.getResource("view/AboutOverview.fxml"));
 			final Pane play= (Pane) loader.load();
 
-			//visualizza il Pane inn una finestra secondaria
+			//visualizza il Pane in una finestra secondaria
 			Scene secondaryScene = new Scene(play, 250, 210);
 			Stage secondaryStage = new Stage();
 			secondaryStage.setTitle("About");
@@ -226,10 +241,11 @@ public class Main extends Application {
 						whitePiecePoints=Board.whiteCounter();
 
 						updatePoint(blackPiecePoints, whitePiecePoints);
-						
-						
+
+
 					}));
 					timePoint.play();
+
 
 					if (Board.hasGameEnded()) {
 
@@ -246,19 +262,24 @@ public class Main extends Application {
 
 						ownerTurnLabel.setText(haveTied ? "pareggio" : winner + " vince");
 					} else {
-						Board.highlightValidPositions(currentTurn);
+						Timeline humanHint = new Timeline(new KeyFrame(Duration.millis(FLIP_DURATION), ev -> {
+							if(currentTurn == PieceType.BLACK) {
+								if(Board.hintValidPositions(currentTurn)==0) {
+									showPassTurn();
+								}
+							}							
+						}));
+						humanHint.play();
+
 						updateOwnerTurnTitle();
 						whiteTurn();
 					}
 
 				});
-				passaTurno.setOnMouseClicked(event3->{
-					nextTurn();
-					updateOwnerTurnTitle();
-					whiteTurn();
-				});
 			}
-
+			// passaTurno.setOnMouseClicked(click->{
+			//	 howToPass();
+			// });
 
 		}
 
@@ -277,7 +298,7 @@ public class Main extends Application {
 	}
 
 	public static void whiteTurn() {
-		
+
 		if (currentTurn == PieceType.WHITE) {
 
 			Timeline timeLine = new Timeline(new KeyFrame(Duration.millis(FLIP_DURATION), ev -> {
@@ -288,10 +309,10 @@ public class Main extends Application {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 				System.out.println(coordinataMossa.toString());
 				if(coordinataMossa.x!=-3 && coordinataMossa.y!=-3)
-			                 Artificial.click(Board.getBox(coordinataMossa.x, coordinataMossa.y));
+					Artificial.click(Board.getBox(coordinataMossa.x, coordinataMossa.y));
 				else {
 					nextTurn();
 					updateOwnerTurnTitle();
@@ -302,7 +323,40 @@ public class Main extends Application {
 
 		}
 	}
+	public static void showPassTurn(){
+		// carica il Pane del passo turno
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(Main.class.getResource("view/PassOverview.fxml"));
+			Pane passWindow = (Pane) loader.load();
 
+
+			//visualizza il Pane in una finestra secondaria
+			Scene secondaryScene = new Scene(passWindow, 350, 100);
+			Stage secondaryStage = new Stage();
+			secondaryStage.setTitle("Passa");
+			secondaryStage.setScene(secondaryScene);
+
+			//inserisce la priorità sulla finestra secondaria
+			secondaryStage.initModality(Modality.WINDOW_MODAL);
+			secondaryStage.initOwner(primaryStage);
+			secondaryStage.setResizable(false);
+
+
+			secondaryStage.show();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+
+	}
+	public static void howToPass() {
+		nextTurn();
+		updateOwnerTurnTitle();
+		whiteTurn();
+	}
 	public static void main(String[] args) {
 		launch(args);
 	}
