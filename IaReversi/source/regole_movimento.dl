@@ -59,17 +59,17 @@ posizionamento(X, Y) v NonPosizionamento(X, Y) :- posizioneValida(X, Y).
 
 % se c'e' tra due pedine una pedina non "mangiabile" (una del computer o una cella vuota)
 
-pedinaNonMangiabilePerRigaP(Riga, Colonna1, Colonna2) :- bucoPerRigaP(Riga, Colonna1, Colonna2).
+pedinaNonMangiabilePerRigaP(Riga, Colonna1, Colonna2) :- bucoPerXP(Riga, Colonna1, Colonna2).
 pedinaNonMangiabilePerRigaP(Riga, Colonna1, Colonna2) :- pedinaPresente(Riga, Colonna2, C), coloreComputer(C), pedinaPresente(Riga, Colonna3, C), Colonna3 > Colonna1, Colonna3 < Colonna2, dimensione(Colonna1).
 
-pedinaNonMangiabilePerRigaD(Riga, Colonna1, Colonna2) :- bucoPerRigaD(Riga, Colonna1, Colonna2).
+pedinaNonMangiabilePerRigaD(Riga, Colonna1, Colonna2) :- bucoPerXD(Riga, Colonna1, Colonna2).
 pedinaNonMangiabilePerRigaD(Riga, Colonna1, Colonna2) :- pedinaPresente(Riga, Colonna2, C), coloreComputer(C), pedinaPresente(Riga, Colonna3, C), Colonna3 < Colonna1, Colonna3 > Colonna2, dimensione(Colonna1).
 
 
-pedinaNonMangiabilePerColonnaP(Colonna, Riga1, Riga2) :- bucoPerColonnaP(Colonna, Riga1, Riga2).
+pedinaNonMangiabilePerColonnaP(Colonna, Riga1, Riga2) :- bucoPerYP(Colonna, Riga1, Riga2).
 pedinaNonMangiabilePerColonnaP(Colonna, Riga1, Riga2) :- pedinaPresente(Riga2, Colonna, C), coloreComputer(C), pedinaPresente(Riga3, Colonna, C), Riga3 > Riga1, Riga3 < Riga2, dimensione(Riga1).
 
-pedinaNonMangiabilePerColonnaD(Colonna, Riga1, Riga2) :- bucoPerColonnaD(Colonna, Riga1, Riga2).
+pedinaNonMangiabilePerColonnaD(Colonna, Riga1, Riga2) :- bucoPerYD(Colonna, Riga1, Riga2).
 pedinaNonMangiabilePerColonnaD(Colonna, Riga1, Riga2) :- pedinaPresente(Riga2, Colonna, C), coloreComputer(C), pedinaPresente(Riga3, Colonna, C), Riga3 < Riga1, Riga3 > Riga2, dimensione(Riga1).
 
 
@@ -90,21 +90,21 @@ pedinaNonMangiabilePerDiagonaleBD(Riga1, Colonna1, Riga2, Colonna2) :- pedinaPre
 
 
 % in 1 c'e' la posizione scelta in 2 c'è una pedina del computer in Colonna c'e' la colonna di una pedina della stessa Riga, compresa tra 1 e 2
-traSullaStessaRiga(Riga, Colonna1, Colonna2, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGioCgtore(Cg), posizionamento(Riga, Colonna1), pedinaPresente(Riga, Colonna2, C), coloreComputer(C), Colonna > Colonna1, Colonna < Colonna2, not pedinaNonMangiabilePerRigaP(Riga, Colonna1, Colonna2).
-traSullaStessaRiga(Riga, Colonna1, Colonna2, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGioCgtore(Cg), posizionamento(Riga, Colonna1), pedinaPresente(Riga, Colonna2, C), coloreComputer(C), Colonna < Colonna1, Colonna > Colonna2, not pedinaNonMangiabilePerRigaD(Riga, Colonna1, Colonna2).
+traSullaStessaRiga(Riga, Colonna1, Colonna2, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga, Colonna1), pedinaPresente(Riga, Colonna2, C), coloreComputer(C), Colonna > Colonna1, Colonna < Colonna2, not pedinaNonMangiabilePerRigaP(Riga, Colonna1, Colonna2).
+traSullaStessaRiga(Riga, Colonna1, Colonna2, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga, Colonna1), pedinaPresente(Riga, Colonna2, C), coloreComputer(C), Colonna < Colonna1, Colonna > Colonna2, not pedinaNonMangiabilePerRigaD(Riga, Colonna1, Colonna2).
 
 % in 1 c'e' la posizione scelta in 2 c'è una pedina del computer in Riga c'e' la colonna di una pedina della stessa Colonna, compresa tra 1 e 2
-traSullaStessaColonna(Riga1, Riga2, Colonna, Riga) :- pedinaPresente(Riga, Colonna, Cg), coloreGioCgtore(Cg), posizionamento(Riga1, Colonna), pedinaPresente(Riga2, Colonna, C), coloreComputer(C), Riga > Riga1, Riga < Riga2, not pedinaNonMangiabilePerColonnaP(Colonna, Riga1, Riga2).
-traSullaStessaColonna(Riga1, Riga2, Colonna, Riga) :- pedinaPresente(Riga, Colonna, Cg), coloreGioCgtore(Cg), posizionamento(Riga1, Colonna), pedinaPresente(Riga2, Colonna, C), coloreComputer(C), Riga < Riga1, Riga > Riga2, not pedinaNonMangiabilePerColonnaD(Colonna, Riga1, Riga2).
+traSullaStessaColonna(Riga1, Riga2, Colonna, Riga) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga1, Colonna), pedinaPresente(Riga2, Colonna, C), coloreComputer(C), Riga > Riga1, Riga < Riga2, not pedinaNonMangiabilePerColonnaP(Colonna, Riga1, Riga2).
+traSullaStessaColonna(Riga1, Riga2, Colonna, Riga) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga1, Colonna), pedinaPresente(Riga2, Colonna, C), coloreComputer(C), Riga < Riga1, Riga > Riga2, not pedinaNonMangiabilePerColonnaD(Colonna, Riga1, Riga2).
 
 % secondo punto in alto a sinistra del primo punto
-traSullaStessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGioCgtore(Cg), posizionamento(Riga1, Colonna1), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga + K1, Colonna1 = Colonna + K1, Riga2 = Riga - K2, Colonna2 = Colonna - K2, dimensione(K1), dimensione(K2), dimensione(Riga1), dimensione(Colonna1), not pedinaNonMangiabilePerDiagonaleAS(Riga1, Colonna1, Riga2, Colonna2).
+traSullaStessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga1, Colonna1), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga + K1, Colonna1 = Colonna + K1, Riga2 = Riga - K2, Colonna2 = Colonna - K2, dimensione(K1), dimensione(K2), dimensione(Riga1), dimensione(Colonna1), not pedinaNonMangiabilePerDiagonaleAS(Riga1, Colonna1, Riga2, Colonna2).
 % secondo punto in alto a destra del primo punto
-traSullaStessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGioCgtore(Cg), posizionamento(Riga1, Colonna1), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga + K1, Colonna1 = Colonna - K1, Riga2 = Riga - K2, Colonna2 = Colonna + K2, dimensione(K1), dimensione(K2), dimensione(Riga1), dimensione(Colonna1), not pedinaNonMangiabilePerDiagonaleAD(Riga1, Colonna1, Riga2, Colonna2).
+traSullaStessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga1, Colonna1), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga + K1, Colonna1 = Colonna - K1, Riga2 = Riga - K2, Colonna2 = Colonna + K2, dimensione(K1), dimensione(K2), dimensione(Riga1), dimensione(Colonna1), not pedinaNonMangiabilePerDiagonaleAD(Riga1, Colonna1, Riga2, Colonna2).
 % secondo punto in basso a sinistra del primo punto
-traSullaStessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGioCgtore(Cg), posizionamento(Riga1, Colonna1), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga - K1, Colonna1 = Colonna + K1, Riga2 = Riga + K2, Colonna2 = Colonna - K2, dimensione(K1), dimensione(K2), dimensione(Riga1), dimensione(Colonna1), not pedinaNonMangiabilePerDiagonaleBS(Riga1, Colonna1, Riga2, Colonna2).
+traSullaStessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga1, Colonna1), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga - K1, Colonna1 = Colonna + K1, Riga2 = Riga + K2, Colonna2 = Colonna - K2, dimensione(K1), dimensione(K2), dimensione(Riga1), dimensione(Colonna1), not pedinaNonMangiabilePerDiagonaleBS(Riga1, Colonna1, Riga2, Colonna2).
 % secondo punto in basso a destra del primo punto
-traSullaStessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGioCgtore(Cg), posizionamento(Riga1, Colonna1), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga - K1, Colonna1 = Colonna - K1, Riga2 = Riga + K2, Colonna2 = Colonna + K2, dimensione(K1), dimensione(K2), dimensione(Riga1), dimensione(Colonna1), not pedinaNonMangiabilePerDiagonaleBD(Riga1, Colonna1, Riga2, Colonna2).
+traSullaStessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga1, Colonna1), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga - K1, Colonna1 = Colonna - K1, Riga2 = Riga + K2, Colonna2 = Colonna + K2, dimensione(K1), dimensione(K2), dimensione(Riga1), dimensione(Colonna1), not pedinaNonMangiabilePerDiagonaleBD(Riga1, Colonna1, Riga2, Colonna2).
 
 
 
