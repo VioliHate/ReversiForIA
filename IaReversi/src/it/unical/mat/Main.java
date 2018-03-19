@@ -10,6 +10,7 @@ import it.unical.mat.model.Artificial;
 import it.unical.mat.model.Board;
 import it.unical.mat.model.Piece;
 import it.unical.mat.model.PieceType;
+import it.unical.mat.model.Place;
 import it.unical.mat.view.TitleLabel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -307,7 +308,7 @@ public class Main extends Application {
 		if (currentTurn == PieceType.WHITE) {
 
 			Timeline timeLine = new Timeline(new KeyFrame(Duration.millis(FLIP_DURATION), ev -> {
-				Point coordinataMossa=new Point();
+				Place coordinataMossa=new Place();
 				try {
 					coordinataMossa=Board.prendereFatti();
 				} catch (Throwable e) {
@@ -316,8 +317,8 @@ public class Main extends Application {
 				}
 
 				System.out.println(coordinataMossa.toString());
-				if(coordinataMossa.x!=-3 && coordinataMossa.y!=-3)
-					Artificial.click(Board.getBox(coordinataMossa.x, coordinataMossa.y));
+				if(coordinataMossa.getPieceX()!=-3 && coordinataMossa.getPieceY()!=-3)
+					Artificial.click(Board.getBox(coordinataMossa.getPieceX(), coordinataMossa.getPieceY()));
 				else {
 					nextTurn();
 					updateOwnerTurnTitle();

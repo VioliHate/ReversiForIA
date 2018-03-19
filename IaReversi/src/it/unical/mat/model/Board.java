@@ -381,7 +381,7 @@ public class Board extends GridPane {
 		}
 
 	}
-	public Point prendereFatti() throws Throwable {
+	public Place prendereFatti() throws Throwable {
 
 		
 
@@ -419,7 +419,7 @@ public class Board extends GridPane {
 
 		if (answerSets.getAnswersets().size() == 0) {
 			System.out.println("niente answerset");
-			return new Point(-3,-3);
+			return new Place(-3,-3);
 		}
 
 		AnswerSet as = answerSets.getAnswersets().get(0);
@@ -436,7 +436,7 @@ public class Board extends GridPane {
 		handler.removeOption(0);
 		handler.removeOption(1);
 
-		return new Point(Integer.parseInt(valori[0]),Integer.parseInt(valori[1]));
+		return new Place(Integer.parseInt(valori[0]),Integer.parseInt(valori[1]));
 	}
 
 

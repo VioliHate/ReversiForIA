@@ -32,7 +32,7 @@ public class Place {
 	@Override
 	public String toString() {
 
-		return "Move( " + getPieceX() + " , " + getPieceY() + ")";
+		return "Move(" + getPieceX() + ", " + getPieceY() + ")";
 
 	}
 
