@@ -1,117 +1,51 @@
-
 % posizioni occupate
-posizioneOccupata(X, Y) :- posizioneOccupata(X, Y, _ ).
+posizioneOccupata(X, Y) :- pedinaPresente(X, Y, _ ).
 
 % posizioni non occupate
 posizioneLibera(X, Y) :- not posizioneOccupata(X,Y), dimensione(X), dimensione(Y).
 
 
-%se la posizione selezionata e' sulla stessa X, Y o diagonale di un altra pedina del computer e mangia almeno una pedina e la cella è vuota
-posizioneValida(X, Y) :- posizioneLibera(X,Y), posizioneOccupata(X, YComputer, C), coloreComputer(C), posizioneOccupata(X, YGiocatore, Cg), coloreGiocatore(Cg), Y < YComputer, Y = YGiocatore - 1, not bucoPerXP(X, Y, YComputer).
-posizioneValida(X, Y) :- posizioneLibera(X,Y), posizioneOccupata(X, YComputer, C), coloreComputer(C), posizioneOccupata(X, YGiocatore, Cg), coloreGiocatore(Cg), Y > YComputer, Y = YGiocatore + 1, not bucoPerXD(X, Y, YComputer).
-posizioneValida(X, Y) :- posizioneLibera(X,Y), posizioneOccupata(XComputer, Y, C), coloreComputer(C), posizioneOccupata(XGiocatore, Y, Cg), coloreGiocatore(Cg), X < XComputer, X = XGiocatore - 1, not bucoPerYP(Y, X, XComputer).
-posizioneValida(X, Y) :- posizioneLibera(X,Y), posizioneOccupata(XComputer, Y, C), coloreComputer(C), posizioneOccupata(XGiocatore, Y, Cg), coloreGiocatore(Cg), X > XComputer, X = XGiocatore + 1, not bucoPerYD(Y, X, XComputer).
-posizioneValida(X, Y) :- posizioneLibera(X,Y), posizioneOccupata(X2, Y2, C), coloreComputer(C), sullaStessaDiagonale(X, Y, X2, Y2).
+%se la posizione selezionata e' sulla stessa X, Y o diagonale di un altra pedina del computer e mangia almeno una pedina e la cella ? vuota
+posizioneValida(X, Y) :- posizioneLibera(X,Y), pedinaPresente(X, YComputer, C), coloreComputer(C), pedinaPresente(X, YGiocatore, Cg), coloreGiocatore(Cg), Y < YComputer, Y = YGiocatore - 1, not bucoPerXP(X, Y, YComputer).
+posizioneValida(X, Y) :- posizioneLibera(X,Y), pedinaPresente(X, YComputer, C), coloreComputer(C), pedinaPresente(X, YGiocatore, Cg), coloreGiocatore(Cg), Y > YComputer, Y = YGiocatore + 1, not bucoPerXD(X, Y, YComputer).
+posizioneValida(X, Y) :- posizioneLibera(X,Y), pedinaPresente(XComputer, Y, C), coloreComputer(C), pedinaPresente(XGiocatore, Y, Cg), coloreGiocatore(Cg), X < XComputer, X = XGiocatore - 1, not bucoPerYP(Y, X, XComputer).
+posizioneValida(X, Y) :- posizioneLibera(X,Y), pedinaPresente(XComputer, Y, C), coloreComputer(C), pedinaPresente(XGiocatore, Y, Cg), coloreGiocatore(Cg), X > XComputer, X = XGiocatore + 1, not bucoPerYD(Y, X, XComputer).
+posizioneValida(X, Y) :- posizioneLibera(X,Y), pedinaPresente(X2, Y2, C), coloreComputer(C), sullaStessaDiagonale(X, Y, X2, Y2).
 
 
 % secondo punto in alto a sinistra del primo punto
-sullaStessaDiagonale(X1, Y1, X2, Y2) :- posizioneOccupata(X2, Y2, C), coloreComputer(C), X1 = X2 + K, Y1 = Y2 + K, dimensione(K), dimensione(X1), dimensione(Y1), posizioneOccupata(XGiocatore, YGiocatore, Ca), coloreGiocatore(Ca), XGiocatore = X1 - 1, YGiocatore = Y1 - 1, not bucoPerDiagonaleAS(X1, Y1, X2, Y2).
+sullaStessaDiagonale(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), X1 = X2+  K, Y1 = Y2 + K, dimensione(K), dimensione(X1), dimensione(Y1), pedinaPresente(XGiocatore, YGiocatore, Ca), coloreGiocatore(Ca), XGiocatore = X1 - 1, YGiocatore = Y1 - 1, not bucoPerDiagonaleAS(X1, Y1, X2, Y2).
 % secondo punto in alto a destra del primo punto
-sullaStessaDiagonale(X1, Y1, X2, Y2) :- posizioneOccupata(X2, Y2, C), coloreComputer(C), X1 = X2 + K, Y1 = Y2 - K, dimensione(K), dimensione(X1), dimensione(Y1), posizioneOccupata(XGiocatore, YGiocatore, Ca), coloreGiocatore(Ca), XGiocatore = X1 - 1, YGiocatore = Y1 + 1, not bucoPerDiagonaleAD(X1, Y1, X2, Y2).
+sullaStessaDiagonale(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), X1 = X2 + K, Y1 = Y2 - K, dimensione(K), dimensione(X1), dimensione(Y1), pedinaPresente(XGiocatore, YGiocatore, Ca), coloreGiocatore(Ca), XGiocatore = X1 - 1, YGiocatore = Y1 + 1, not bucoPerDiagonaleAD(X1, Y1, X2, Y2).
 % secondo punto in basso a sinistra del primo punto
-sullaStessaDiagonale(X1, Y1, X2, Y2) :- posizioneOccupata(X2, Y2, C), coloreComputer(C), X1 = X2 - K, Y1 = Y2 + K, dimensione(K), dimensione(X1), dimensione(Y1), posizioneOccupata(XGiocatore, YGiocatore, Ca), coloreGiocatore(Ca), XGiocatore = X1 + 1, YGiocatore = Y1 - 1, not bucoPerDiagonaleBS(X1, Y1, X2, Y2).
+sullaStessaDiagonale(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), X1 = X2 - K, Y1 = Y2 + K, dimensione(K), dimensione(X1), dimensione(Y1), pedinaPresente(XGiocatore, YGiocatore, Ca), coloreGiocatore(Ca), XGiocatore = X1 + 1, YGiocatore = Y1 - 1, not bucoPerDiagonaleBS(X1, Y1, X2, Y2).
 % secondo punto in basso a destra del primo punto
-sullaStessaDiagonale(X1, Y1, X2, Y2) :- posizioneOccupata(X2, Y2, C), coloreComputer(C), X1 = X2 - K, Y1 = Y2 - K, dimensione(K), dimensione(X1), dimensione(Y1), posizioneOccupata(XGiocatore, YGiocatore, Ca), coloreGiocatore(Ca), XGiocatore = X1 + 1, YGiocatore = Y1 + 1, not bucoPerDiagonaleBD(X1, Y1, X2, Y2).
+sullaStessaDiagonale(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), X1 = X2 - K, Y1 = Y2 - K, dimensione(K), dimensione(X1), dimensione(Y1), pedinaPresente(XGiocatore, YGiocatore, Ca), coloreGiocatore(Ca), XGiocatore = X1 + 1, YGiocatore = Y1 + 1, not bucoPerDiagonaleBD(X1, Y1, X2, Y2).
 
 
-%controlla se c'è un buco tra le pedine la prima e' sempre quella dove dovra' essere inserita la pedina e la seconda e' sempre una gia' del computer
+%controlla se c'? un buco tra le pedine la prima e' sempre quella dove dovra' essere inserita la pedina e la seconda e' sempre una gia' del computer
 
-bucoPerXP(X, Y1, Y2) :- posizioneOccupata(X, Y2, C), coloreComputer(C), posizioneLibera(X,Y3), Y3 > Y1, Y3 < Y2, dimensione(Y1).
-bucoPerXD(X, Y1, Y2) :- posizioneOccupata(X, Y2, C), coloreComputer(C), posizioneLibera(X,Y3), Y3 < Y1, Y3 > Y2, dimensione(Y1).
+bucoPerXP(X, Y1, Y2) :- pedinaPresente(X, Y2, C), coloreComputer(C), posizioneLibera(X,Y3), Y3 > Y1, Y3 < Y2, dimensione(Y1).
+bucoPerXD(X, Y1, Y2) :- pedinaPresente(X, Y2, C), coloreComputer(C), posizioneLibera(X,Y3), Y3 < Y1, Y3 > Y2, dimensione(Y1).
 
-bucoPerYP(Y, X1, X2) :- posizioneOccupata(X2, Y, C), coloreComputer(C), posizioneLibera(X3,Y), X3 > X1, X3 < X2, dimensione(X1).
-bucoPerYD(Y, X1, X2) :- posizioneOccupata(X2, Y, C), coloreComputer(C), posizioneLibera(X3,Y), X3 < X1, X3 > X2, dimensione(X1).
+bucoPerYP(Y, X1, X2) :- pedinaPresente(X2, Y, C), coloreComputer(C), posizioneLibera(X3,Y), X3 > X1, X3 < X2, dimensione(X1).
+bucoPerYD(Y, X1, X2) :- pedinaPresente(X2, Y, C), coloreComputer(C), posizioneLibera(X3,Y), X3 < X1, X3 > X2, dimensione(X1).
 
 % secondo punto in alto a sinistra del primo punto
-bucoPerDiagonaleAS(X1, Y1, X2, Y2) :- posizioneOccupata(X2, Y2, C), coloreComputer(C), posizioneLibera(X3,Y3), X1 = X3 + K1, Y1 = Y3 + K1, X2 = X3 - K2, Y2 = Y3 - K2, dimensione(K1), dimensione(K2), dimensione(X1), dimensione(Y1).
+bucoPerDiagonaleAS(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), posizioneLibera(X3,Y3), X1 = X3 + K1, Y1 = Y3 + K1, X2 = X3 - K2, Y2 = Y3 - K2, dimensione(K1), dimensione(K2), dimensione(X1), dimensione(Y1).
 % secondo punto in alto a destra del primo punto
-bucoPerDiagonaleAD(X1, Y1, X2, Y2) :- posizioneOccupata(X2, Y2, C), coloreComputer(C), posizioneLibera(X3,Y3), X1 = X3 + K1, Y1 = Y3 - K1, X2 = X3 - K2, Y2 = Y3 + K2, dimensione(K1), dimensione(K2), dimensione(X1), dimensione(Y1).
+bucoPerDiagonaleAD(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), posizioneLibera(X3,Y3), X1 = X3 + K1, Y1 = Y3 - K1, X2 = X3 - K2, Y2 = Y3 + K2, dimensione(K1), dimensione(K2), dimensione(X1), dimensione(Y1).
 % secondo punto in basso a sinistra del primo punto
-bucoPerDiagonaleBS(X1, Y1, X2, Y2) :- posizioneOccupata(X2, Y2, C), coloreComputer(C), posizioneLibera(X3,Y3), X1 = X3 - K1, Y1 = Y3 + K1, X2 = X3 + K2, Y2 = Y3 - K2, dimensione(K1), dimensione(K2), dimensione(X1), dimensione(Y1).
+bucoPerDiagonaleBS(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), posizioneLibera(X3,Y3), X1 = X3 - K1, Y1 = Y3 + K1, X2 = X3 + K2, Y2 = Y3 - K2, dimensione(K1), dimensione(K2), dimensione(X1), dimensione(Y1).
 % secondo punto in basso a destra del primo punto
-bucoPerDiagonaleBD(X1, Y1, X2, Y2) :- posizioneOccupata(X2, Y2, C), coloreComputer(C), posizioneLibera(X3,Y3), X1 = X3 - K1, Y1 = Y3 - K1, X2 = X3 + K2, Y2 = Y3 + K2, dimensione(K1), dimensione(K2), dimensione(X1), dimensione(Y1).
+bucoPerDiagonaleBD(X1, Y1, X2, Y2) :- pedinaPresente(X2, Y2, C), coloreComputer(C), posizioneLibera(X3,Y3), X1 = X3 - K1, Y1 = Y3 - K1, X2 = X3 + K2, Y2 = Y3 + K2, dimensione(K1), dimensione(K2), dimensione(X1), dimensione(Y1).
 
 
 
-% Guess posizionamentoindica la posizione scelta dal computer
+% Guess posizioneScelta indica la posizione scelta dal computer
 posizionamento(X, Y) v NonPosizionamento(X, Y) :- posizioneValida(X, Y).
 
 
 
-% Check ci deve essere un solo atomo ground di posizionamento
+% Check ci deve essere un solo atomo ground di posizioneScelta
 :- not #count{X, Y : posizionamento(X, Y)} = 1.
-
-
-
-
-% se c'e' tra due pedine una pedina non "mangiabile" (una del computer o una cella vuota)
-
-pedinaNonMangiabilePerRigaP(Riga, Colonna1, Colonna2) :- bucoPerRigaP(Riga, Colonna1, Colonna2).
-pedinaNonMangiabilePerRigaP(Riga, Colonna1, Colonna2) :- posizioneOccupata(Riga, Colonna2, C), coloreComputer(C), posizioneOccupata(Riga, Colonna3, C), Colonna3 > Colonna1, Colonna3 < Colonna2, rigaOcolonna(Colonna1).
-
-pedinaNonMangiabilePerRigaD(Riga, Colonna1, Colonna2) :- bucoPerRigaD(Riga, Colonna1, Colonna2).
-pedinaNonMangiabilePerRigaD(Riga, Colonna1, Colonna2) :- posizioneOccupata(Riga, Colonna2, C), coloreComputer(C), posizioneOccupata(Riga, Colonna3, C), Colonna3 < Colonna1, Colonna3 > Colonna2, rigaOcolonna(Colonna1).
-
-
-pedinaNonMangiabilePerColonnaP(Colonna, Riga1, Riga2) :- bucoPerColonnaP(Colonna, Riga1, Riga2).
-pedinaNonMangiabilePerColonnaP(Colonna, Riga1, Riga2) :- posizioneOccupata(Riga2, Colonna, C), coloreComputer(C), posizioneOccupata(Riga3, Colonna, C), Riga3 > Riga1, Riga3 < Riga2, rigaOcolonna(Riga1).
-
-pedinaNonMangiabilePerColonnaD(Colonna, Riga1, Riga2) :- bucoPerColonnaD(Colonna, Riga1, Riga2).
-pedinaNonMangiabilePerColonnaD(Colonna, Riga1, Riga2) :- posizioneOccupata(Riga2, Colonna, C), coloreComputer(C), posizioneOccupata(Riga3, Colonna, C), Riga3 < Riga1, Riga3 > Riga2, rigaOcolonna(Riga1).
-
-
-% secondo punto in alto a sinistra del primo punto
-pedinaNonMangiabilePerDiagonaleAS(Riga1, Colonna1, Riga2, Colonna2) :- bucoPerDiagonaleAS(Riga1, Colonna1, Riga2, Colonna2).
-pedinaNonMangiabilePerDiagonaleAS(Riga1, Colonna1, Riga2, Colonna2) :- posizioneOccupata(Riga2, Colonna2, C), coloreComputer(C), posizioneOccupata(Riga3, Colonna3, C), Riga1 = Riga3 + K1, Colonna1 = Colonna3 + K1, Riga2 = Riga3 - K2, Colonna2 = Colonna3 - K2, rigaOcolonna(K1), rigaOcolonna(K2), rigaOcolonna(Riga1), rigaOcolonna(Colonna1).
-% secondo punto in alto a destra del primo punto
-pedinaNonMangiabilePerDiagonaleAD(Riga1, Colonna1, Riga2, Colonna2) :- bucoPerDiagonaleAD(Riga1, Colonna1, Riga2, Colonna2).
-pedinaNonMangiabilePerDiagonaleAD(Riga1, Colonna1, Riga2, Colonna2) :- posizioneOccupata(Riga2, Colonna2, C), coloreComputer(C), posizioneOccupata(Riga3, Colonna3, C), Riga1 = Riga3 + K1, Colonna1 = Colonna3 - K1, Riga2 = Riga3 - K2, Colonna2 = Colonna3 + K2, rigaOcolonna(K1), rigaOcolonna(K2), rigaOcolonna(Riga1), rigaOcolonna(Colonna1).
-% secondo punto in basso a sinistra del primo punto
-pedinaNonMangiabilePerDiagonaleBS(Riga1, Colonna1, Riga2, Colonna2) :- bucoPerDiagonaleBS(Riga1, Colonna1, Riga2, Colonna2).
-pedinaNonMangiabilePerDiagonaleBS(Riga1, Colonna1, Riga2, Colonna2) :- posizioneOccupata(Riga2, Colonna2, C), coloreComputer(C), posizioneOccupata(Riga3, Colonna3, C), Riga1 = Riga3 - K1, Colonna1 = Colonna3 + K1, Riga2 = Riga3 + K2, Colonna2 = Colonna3 - K2, rigaOcolonna(K1), rigaOcolonna(K2), rigaOcolonna(Riga1), rigaOcolonna(Colonna1).
-% secondo punto in basso a destra del primo punto
-pedinaNonMangiabilePerDiagonaleBD(Riga1, Colonna1, Riga2, Colonna2) :- bucoPerDiagonaleBD(Riga1, Colonna1, Riga2, Colonna2).
-pedinaNonMangiabilePerDiagonaleBD(Riga1, Colonna1, Riga2, Colonna2) :- posizioneOccupata(Riga2, Colonna2, C), coloreComputer(C), posizioneOccupata(Riga3, Colonna3, C), Riga1 = Riga3 - K1, Colonna1 = Colonna3 - K1, Riga2 = Riga3 + K2, Colonna2 = Colonna3 + K2, rigaOcolonna(K1), rigaOcolonna(K2), rigaOcolonna(Riga1), rigaOcolonna(Colonna1).
-
-
-
-
-% in 1 c'e' la posizione scelta in 2 c'è una pedina del computer in Colonna c'e' la colonna di una pedina della stessa Riga, compresa tra 1 e 2
-traSullaStessaRiga(Riga, Colonna1, Colonna2, Colonna) :- posizioneOccupata(Riga, Colonna, Ca), coloreGiocatore(Ca), posizionamento(Riga, Colonna1), posizioneOccupata(Riga, Colonna2, C), coloreComputer(C), Colonna > Colonna1, Colonna < Colonna2, not pedinaNonMangiabilePerRigaP(Riga, Colonna1, Colonna2).
-traSullaStessaRiga(Riga, Colonna1, Colonna2, Colonna) :- posizioneOccupata(Riga, Colonna, Ca), coloreGiocatore(Ca), posizionamento(Riga, Colonna1), posizioneOccupata(Riga, Colonna2, C), coloreComputer(C), Colonna < Colonna1, Colonna > Colonna2, not pedinaNonMangiabilePerRigaD(Riga, Colonna1, Colonna2).
-
-% in 1 c'e' la posizione scelta in 2 c'è una pedina del computer in Riga c'e' la colonna di una pedina della stessa Colonna, compresa tra 1 e 2
-traSullaStessaColonna(Riga1, Riga2, Colonna, Riga) :- posizioneOccupata(Riga, Colonna, Ca), coloreGiocatore(Ca), posizionamento(Riga1, Colonna), posizioneOccupata(Riga2, Colonna, C), coloreComputer(C), Riga > Riga1, Riga < Riga2, not pedinaNonMangiabilePerColonnaP(Colonna, Riga1, Riga2).
-traSullaStessaColonna(Riga1, Riga2, Colonna, Riga) :- posizioneOccupata(Riga, Colonna, Ca), coloreGiocatore(Ca), posizionamento(Riga1, Colonna), posizioneOccupata(Riga2, Colonna, C), coloreComputer(C), Riga < Riga1, Riga > Riga2, not pedinaNonMangiabilePerColonnaD(Colonna, Riga1, Riga2).
-
-% secondo punto in alto a sinistra del primo punto
-traSullaStessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- posizioneOccupata(Riga, Colonna, Ca), coloreGiocatore(Ca), posizionamento(Riga1, Colonna1), posizioneOccupata(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga + K1, Colonna1 = Colonna + K1, Riga2 = Riga - K2, Colonna2 = Colonna - K2, rigaOcolonna(K1), rigaOcolonna(K2), rigaOcolonna(Riga1), rigaOcolonna(Colonna1), not pedinaNonMangiabilePerDiagonaleAS(Riga1, Colonna1, Riga2, Colonna2).
-% secondo punto in alto a destra del primo punto
-traSullaStessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- posizioneOccupata(Riga, Colonna, Ca), coloreGiocatore(Ca), posizionamento(Riga1, Colonna1), posizioneOccupata(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga + K1, Colonna1 = Colonna - K1, Riga2 = Riga - K2, Colonna2 = Colonna + K2, rigaOcolonna(K1), rigaOcolonna(K2), rigaOcolonna(Riga1), rigaOcolonna(Colonna1), not pedinaNonMangiabilePerDiagonaleAD(Riga1, Colonna1, Riga2, Colonna2).
-% secondo punto in basso a sinistra del primo punto
-traSullaStessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- posizioneOccupata(Riga, Colonna, Ca), coloreGiocatore(Ca), posizionamento(Riga1, Colonna1), posizioneOccupata(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga - K1, Colonna1 = Colonna + K1, Riga2 = Riga + K2, Colonna2 = Colonna - K2, rigaOcolonna(K1), rigaOcolonna(K2), rigaOcolonna(Riga1), rigaOcolonna(Colonna1), not pedinaNonMangiabilePerDiagonaleBS(Riga1, Colonna1, Riga2, Colonna2).
-% secondo punto in basso a destra del primo punto
-traSullaStessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- posizioneOccupata(Riga, Colonna, Ca), coloreGiocatore(Ca), posizionamento(Riga1, Colonna1), posizioneOccupata(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga - K1, Colonna1 = Colonna - K1, Riga2 = Riga + K2, Colonna2 = Colonna + K2, rigaOcolonna(K1), rigaOcolonna(K2), rigaOcolonna(Riga1), rigaOcolonna(Colonna1), not pedinaNonMangiabilePerDiagonaleBD(Riga1, Colonna1, Riga2, Colonna2).
-
-
-
-% conto quanti ne mangia ci dovrebbe essere una sola istanza per ogni regola
-possibile_valore(0..64).
-quanti_ne_mangia_riga(Quanti) :- posizionamento(Riga, Colonna), #count{ ColonnaR : traSullaStessaRiga(Riga, Colonna, Colonna2, ColonnaR), posizioneOccupata(Riga, Colonna2, C), coloreComputer(C) } = Quanti, possibile_valore(Quanti).
-quanti_ne_mangia_colonna(Quanti) :- posizionamento(Riga, Colonna), #count{ RigaR : traSullaStessaColonna(Riga, Riga2, Colonna, RigaR), posizioneOccupata(Riga2, Colonna, C), coloreComputer(C) } = Quanti, possibile_valore(Quanti).
-quanti_ne_mangia_diagonale(Quanti) :- posizionamento(Riga, Colonna), #count{ RigaR, ColonnaR : traSullaStessaDiagonale(Riga, Colonna, Riga2, Colonna2, RigaR, ColonnaR), posizioneOccupata(Riga2, Colonna2, C), coloreComputer(C) } = Quanti, possibile_valore(Quanti).
-
-quanti_ne_mangia(Quanti) :- quanti_ne_mangia_riga(QuantiRiga), quanti_ne_mangia_colonna(QuantiColonna), quanti_ne_mangia_diagonale(QuantiDiagonale), QuantiRigaColonna = QuantiRiga + QuantiColonna, Quanti = QuantiRigaColonna + QuantiDiagonale, possibile_valore(Quanti), possibile_valore(QuantiRigaColonna).
-
-
-:~ quanti_ne_mangia(Quanti), 64 = Q + Quanti, possibile_valore(Q). [Q : 2]
