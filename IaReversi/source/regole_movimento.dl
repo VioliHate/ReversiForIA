@@ -21,11 +21,11 @@ stessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- pedinaPresen
 
 
 %conto le pedine mangiate
-possibile_valore(0..64).
-quanti_ne_mangia_riga(Quanti) :- posizionamento(Riga, Colonna), #count{ ColonnaR : stessaRiga(Riga, Colonna, Colonna2, ColonnaR), pedinaPresente(Riga, Colonna2, C), coloreComputer(C) } = Quanti, possibile_valore(Quanti).
-quanti_ne_mangia_colonna(Quanti) :- posizionamento(Riga, Colonna), #count{ RigaR : stessaColonna(Riga, Riga2, Colonna, RigaR), pedinaPresente(Riga2, Colonna, C), coloreComputer(C) } = Quanti, possibile_valore(Quanti).
-quanti_ne_mangia_diagonale(Quanti) :- posizionamento(Riga, Colonna), #count{ RigaR, ColonnaR : stessaDiagonale(Riga, Colonna, Riga2, Colonna2, RigaR, ColonnaR), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C) } = Quanti, possibile_valore(Quanti).
-quanti_ne_mangia(Quanti) :- quanti_ne_mangia_riga(QuantiRiga), quanti_ne_mangia_colonna(QuantiColonna), quanti_ne_mangia_diagonale(QuantiDiagonale), QuantiPrimo = QuantiRiga + QuantiColonna, Quanti=QuantiPrimo + QuantiDiagonale, possibile_valore(Quanti).
+punteggio(0..64).
+quanti_ne_mangia_riga(Quanti) :- posizionamento(Riga, Colonna), #count{ ColonnaR : stessaRiga(Riga, Colonna, Colonna2, ColonnaR), pedinaPresente(Riga, Colonna2, C), coloreComputer(C) } = Quanti, punteggio(Quanti).
+quanti_ne_mangia_colonna(Quanti) :- posizionamento(Riga, Colonna), #count{ RigaR : stessaColonna(Riga, Riga2, Colonna, RigaR), pedinaPresente(Riga2, Colonna, C), coloreComputer(C) } = Quanti, punteggio(Quanti).
+quanti_ne_mangia_diagonale(Quanti) :- posizionamento(Riga, Colonna), #count{ RigaR, ColonnaR : stessaDiagonale(Riga, Colonna, Riga2, Colonna2, RigaR, ColonnaR), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C) } = Quanti, punteggio(Quanti).
+quanti_ne_mangia(Quanti) :- quanti_ne_mangia_riga(QuantiRiga), quanti_ne_mangia_colonna(QuantiColonna), quanti_ne_mangia_diagonale(QuantiDiagonale), QuantiPrimo = QuantiRiga + QuantiColonna, Quanti=QuantiPrimo + QuantiDiagonale, punteggio(Quanti).
 
 % weak si preferisce sempre un posizionamento con piu pedine mangiate
-:~ quanti_ne_mangia(Quanti), 64 = T + Quanti, possibile_valore(T). [T : 2]
+:~ quanti_ne_mangia(Quanti), 64 = T + Quanti, punteggio(T). [T : 2]
