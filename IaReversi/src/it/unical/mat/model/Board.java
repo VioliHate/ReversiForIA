@@ -386,7 +386,7 @@ public class Board extends GridPane {
 		
 
 		handler.addOption(new OptionDescriptor("-filter=posizionamento "));
-		//		handler.addOption(new OptionDescriptor("-n=1 "));
+		//handler.addOption(new OptionDescriptor("-n=1 "));
 
 
 		String fatti=new String();
@@ -404,6 +404,26 @@ public class Board extends GridPane {
 			}
 
 		}
+		for (int i = 0; i < boardSize; i++) {
+			for (int j = 0; j < boardSize; j++) {
+				Piece Piece = getPiece(i, j);
+
+				Piece.setType(Piece.getType());
+				Piece.setRadius(boxSize/2 -5);
+				Piece.setOpacity(1);
+
+				for (int[] directionGroup: directions) {
+					int rowDirection = directionGroup[0];
+					int columnDirection = directionGroup[1];
+
+					if (Piece.getType() == PieceType.NONE && isFlipableDirection(i, j, rowDirection, columnDirection, PieceType.WHITE)) {
+						fatti+="posizioneValida(" + i + "," + j + ","+ Pieces[i][j].getType().toString() + ").";
+						break;
+					}
+				}
+			}
+		}
+
 		System.out.println(fatti);
 		InputProgram inputProgram;
 		inputProgram = new ASPInputProgram(fatti);
