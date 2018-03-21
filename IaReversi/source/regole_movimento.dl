@@ -3,3 +3,31 @@ posizionamento(X, Y) v NonPosizionamento(X, Y) :- posizioneValida(X, Y,vuoto).
 
 % Check ci deve essere un solo atomo ground di posizioneScelta
 :- not #count{X, Y : posizionamento(X, Y)} = 1.
+
+
+stessaRiga(Riga, Colonna1, Colonna2, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga, Colonna1), pedinaPresente(Riga, Colonna2, C), coloreComputer(C), Colonna > Colonna1, Colonna < Colonna2.
+stessaRiga(Riga, Colonna1, Colonna2, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga, Colonna1), pedinaPresente(Riga, Colonna2, C), coloreComputer(C), Colonna < Colonna1, Colonna > Colonna2.
+
+% in 1 c'e' la posizione scelta in 2 c'è una pedina del computer in Riga c'e' la colonna di una pedina della stessa Colonna, compresa tra 1 e 2
+stessaColonna(Riga1, Riga2, Colonna, Riga) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga1, Colonna), pedinaPresente(Riga2, Colonna, C), coloreComputer(C), Riga > Riga1, Riga < Riga2.
+stessaColonna(Riga1, Riga2, Colonna, Riga) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga1, Colonna), pedinaPresente(Riga2, Colonna, C), coloreComputer(C), Riga < Riga1, Riga > Riga2.
+
+% secondo punto in alto a sinistra del primo punto
+stessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga1, Colonna1), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga + K1, Colonna1 = Colonna + K1, Riga2 = Riga - K2, Colonna2 = Colonna - K2, dimensione(K1), dimensione(K2), dimensione(Riga1), dimensione(Colonna1).
+% secondo punto in alto a destra del primo punto
+stessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga1, Colonna1), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga + K1, Colonna1 = Colonna - K1, Riga2 = Riga - K2, Colonna2 = Colonna + K2, dimensione(K1), dimensione(K2), dimensione(Riga1), dimensione(Colonna1).
+% secondo punto in basso a sinistra del primo punto
+stessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga1, Colonna1), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga - K1, Colonna1 = Colonna + K1, Riga2 = Riga + K2, Colonna2 = Colonna - K2, dimensione(K1), dimensione(K2), dimensione(Riga1), dimensione(Colonna1).
+% secondo punto in basso a destra del primo punto
+stessaDiagonale(Riga1, Colonna1, Riga2, Colonna2, Riga, Colonna) :- pedinaPresente(Riga, Colonna, Cg), coloreGiocatore(Cg), posizionamento(Riga1, Colonna1), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C), Riga1 = Riga - K1, Colonna1 = Colonna - K1, Riga2 = Riga + K2, Colonna2 = Colonna + K2, dimensione(K1), dimensione(K2), dimensione(Riga1), dimensione(Colonna1).
+
+
+
+
+possibile_valore(0..64).
+quanti_ne_mangia_riga(Quanti) :- posizionamento(Riga, Colonna), #count{ ColonnaR : stessaRiga(Riga, Colonna, Colonna2, ColonnaR), pedinaPresente(Riga, Colonna2, C), coloreComputer(C) } = Quanti, possibile_valore(Quanti).
+quanti_ne_mangia_colonna(Quanti) :- posizionamento(Riga, Colonna), #count{ RigaR : stessaColonna(Riga, Riga2, Colonna, RigaR), pedinaPresente(Riga2, Colonna, C), coloreComputer(C) } = Quanti, possibile_valore(Quanti).
+quanti_ne_mangia_diagonale(Quanti) :- posizionamento(Riga, Colonna), #count{ RigaR, ColonnaR : stessaDiagonale(Riga, Colonna, Riga2, Colonna2, RigaR, ColonnaR), pedinaPresente(Riga2, Colonna2, C), coloreComputer(C) } = Quanti, possibile_valore(Quanti).
+quanti_ne_mangia(Quanti) :- quanti_ne_mangia_riga(QuantiRiga), quanti_ne_mangia_colonna(QuantiColonna), quanti_ne_mangia_diagonale(QuantiDiagonale), QuantiPrimo = QuantiRiga + QuantiColonna, Quanti=QuantiPrimo + QuantiDiagonale, possibile_valore(Quanti).
+
+:~ quanti_ne_mangia(Quanti), 64 = Q + Quanti, possibile_valore(Q). [Q : 2]
