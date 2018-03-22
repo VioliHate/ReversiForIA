@@ -6,3 +6,60 @@ coloreComputer(bianco).
 
 % colore pedina giocatore
 coloreGiocatore(nero).
+
+% celle non occupate
+posizioneOccupata(Riga, Colonna) :- pedinaPresente(Riga, Colonna, _).
+
+% posizioni non occupate
+posizioneLibera(Riga, Colonna) :- not posizioneOccupata(Riga,Colonna), dimensione(Riga), dimensione(Colonna).
+
+
+%gli angoli sono posizioni importanti
+angolo(0,0).
+angolo(0,7).
+angolo(7,0).
+angolo(7,7).
+
+%fatti degli angoli X
+angoloX(1, 1, 0, 0).
+angoloX(1, 6, 0, 7).
+angoloX(6, 1, 7, 0).
+angoloX(6, 6, 7, 7).
+
+
+%le pedinaStabile rappresentano la posizione di una pedina stabile e il peso annesso alla sua tipologia = tipo : peso    A : 2 , B : 4 , C : 8 , X : 16
+%tipo A
+pedinaStabile(2,0,2).
+pedinaStabile(5,0,2).
+pedinaStabile(0,4,2).
+pedinaStabile(0,5,2).
+pedinaStabile(2,7,2).
+pedinaStabile(5,7,2).
+pedinaStabile(7,2,2).
+pedinaStabile(7,5,2).
+
+%tipo B
+pedinaStabile(3,0,4).
+pedinaStabile(4,0,4).
+pedinaStabile(0,3,4).
+pedinaStabile(0,4,4).
+pedinaStabile(3,7,4).
+pedinaStabile(4,7,4).
+pedinaStabile(7,3,4).
+pedinaStabile(7,4,4).
+
+%tipo C
+pedinaStabile(1,0,8).
+pedinaStabile(6,0,8).
+pedinaStabile(0,1,8).
+pedinaStabile(0,6,8).
+pedinaStabile(1,7,8).
+pedinaStabile(6,7,8).
+pedinaStabile(7,1,8).
+pedinaStabile(7,6,8).
+
+%tipo X
+pedinaStabile(1,1,16).
+pedinaStabile(1,6,16).
+pedinaStabile(6,1,16).
+pedinaStabile(6,6,16).
