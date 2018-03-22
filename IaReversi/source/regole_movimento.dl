@@ -28,12 +28,15 @@ quanti_ne_mangia_diagonale(Quanti) :- posizionamento(Riga, Colonna), #count{ Rig
 quanti_ne_mangia(Quanti) :- quanti_ne_mangia_riga(QuantiRiga), quanti_ne_mangia_colonna(QuantiColonna), quanti_ne_mangia_diagonale(QuantiDiagonale), QuantiPrimo = QuantiRiga + QuantiColonna, Quanti=QuantiPrimo + QuantiDiagonale, punteggio(Quanti).
 
 % weak si preferisce sempre un posizionamento con piu pedine mangiate
-:~ quanti_ne_mangia(Quanti), 64 = T + Quanti, punteggio(T). [T : 4]
+:~ quanti_ne_mangia(Quanti), 64 = T + Quanti, punteggio(T). [T : 8]
 
 
 
 %weak che preferisce il posizionamento negli angoli
-:~ NonPosizionamento(X, Y), angolo(X, Y). [1 : 1]
+:~ NonPosizionamento(X, Y), angolo(X, Y). [1 : 5]
+
+% se lui sceglie una posizione "pessima"
+:~ posizionamento(Riga, Colonna), pedinaStabile(Riga, Colonna, Peso), Peso <> 16. [Peso : 2]
 
 
 
@@ -41,4 +44,13 @@ quanti_ne_mangia(Quanti) :- quanti_ne_mangia_riga(QuantiRiga), quanti_ne_mangia_
 :~ posizionamento(X, Y), stessaRiga(X, Y, Y2, YR), pedinaPresente(X, Y2, C), coloreComputer(C), pedinaStabile(X, YR, 16), angoloX(X, YR, XA, YA), posizioneLibera(XA, YA). [2 : 3]
 :~ posizionamento(X, Y), stessaColonna(X, X2, Y, XR), pedinaPresente(X2, Y, C), coloreComputer(C), pedinaStabile(XR, Y, 16), angoloX(XR, Y, XA, YA), posizioneLibera(XA, YA). [2 : 3]
 :~ posizionamento(X, Y), stessaDiagonale(X, Y, X2, Y2, XR, YR), pedinaPresente(X2, Y2, C), coloreComputer(C), pedinaStabile(XR, YR, 16), angoloX(XR, YR, XA, YA), posizioneLibera(XA, YA). [2 : 3]
-:~ posizionamento(X, Y), pedinaStabile(X, Y, 16), angoloX(X, Y, XA, YA), posizioneLibera(XA, YA). [2 : 3]
+:~ posizionamento(X, Y), pedinaStabile(X, Y, 16), angoloX(X, Y, XA, YA), posizioneLibera(XA, YA). [2 : 4]
+
+
+
+
+% se può mettere in una posizione ad un bordo e non ci sono pedine in quel bordo
+:~ posizioneNonScelta(_, 0), colonnaSenzaPedine(0). [1 : 3]
+:~ posizioneNonScelta(_, 7), colonnaSenzaPedine(7). [1 : 1]
+:~ posizioneNonScelta(0, _), rigaSenzaPedine(0). [1 : 1]
+:~ posizioneNonScelta(7, _), rigaSenzaPedine(7). [1 : 1]

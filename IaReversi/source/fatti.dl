@@ -13,6 +13,11 @@ posizioneOccupata(Riga, Colonna) :- pedinaPresente(Riga, Colonna, _).
 % posizioni non occupate
 posizioneLibera(Riga, Colonna) :- not posizioneOccupata(Riga,Colonna), dimensione(Riga), dimensione(Colonna).
 
+%calcolo delle righe|colonna con pedina e senza
+rigaConPedina(R) :- pedinaPresente(R, _, _).
+colonnaConPedina(C) :- pedinaPresente(_, C, _).
+rigaSenzaPedine(R) :- dimenisione(R), not rigaConPedina(R).
+colonnaSenzaPedine(C) :- dimensione(C), not colonnaConPedina(C).
 
 %gli angoli sono posizioni importanti
 angolo(0,0).
