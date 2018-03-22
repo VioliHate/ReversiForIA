@@ -28,29 +28,86 @@ quanti_ne_mangia_diagonale(Quanti) :- posizionamento(Riga, Colonna), #count{ Rig
 quanti_ne_mangia(Quanti) :- quanti_ne_mangia_riga(QuantiRiga), quanti_ne_mangia_colonna(QuantiColonna), quanti_ne_mangia_diagonale(QuantiDiagonale), QuantiPrimo = QuantiRiga + QuantiColonna, Quanti=QuantiPrimo + QuantiDiagonale, punteggio(Quanti).
 
 % weak si preferisce sempre un posizionamento con piu pedine mangiate
-:~ quanti_ne_mangia(Quanti), 64 = T + Quanti, punteggio(T). [T : 8]
+:~ quanti_ne_mangia(Quanti), 64 = T + Quanti, punteggio(T). [T : 2]
 
 
 
 %weak che preferisce il posizionamento negli angoli
-:~ NonPosizionamento(X, Y), angolo(X, Y). [1 : 5]
+:~ NonPosizionamento(X, Y), angolo(X, Y). [1 : 16]
 
-% se lui sceglie una posizione "pessima"
-:~ posizionamento(Riga, Colonna), pedinaStabile(Riga, Colonna, Peso), Peso <> 16. [Peso : 2]
+% se lui sceglie una posizione "critica" ovvero posizione dove puoi perdere un angolo
+:~ posizionamento(Riga, Colonna), pedinaStabile(Riga, Colonna, Peso), Peso <> 16. [Peso : 4]
 
 
 
 % weak che punta a prendere la pedina in posizione X oppure sceglie la posizione X se l'angolo non e' stato ancora preso
-:~ posizionamento(X, Y), stessaRiga(X, Y, Y2, YR), pedinaPresente(X, Y2, C), coloreComputer(C), pedinaStabile(X, YR, 16), angoloX(X, YR, XA, YA), posizioneLibera(XA, YA). [2 : 3]
-:~ posizionamento(X, Y), stessaColonna(X, X2, Y, XR), pedinaPresente(X2, Y, C), coloreComputer(C), pedinaStabile(XR, Y, 16), angoloX(XR, Y, XA, YA), posizioneLibera(XA, YA). [2 : 3]
-:~ posizionamento(X, Y), stessaDiagonale(X, Y, X2, Y2, XR, YR), pedinaPresente(X2, Y2, C), coloreComputer(C), pedinaStabile(XR, YR, 16), angoloX(XR, YR, XA, YA), posizioneLibera(XA, YA). [2 : 3]
-:~ posizionamento(X, Y), pedinaStabile(X, Y, 16), angoloX(X, Y, XA, YA), posizioneLibera(XA, YA). [2 : 4]
+:~ posizionamento(X, Y), stessaRiga(X, Y, Y2, YR), pedinaPresente(X, Y2, C), coloreComputer(C), pedinaStabile(X, YR, 16), angoloX(X, YR, XA, YA), posizioneLibera(XA, YA). [4 : 13]
+:~ posizionamento(X, Y), stessaColonna(X, X2, Y, XR), pedinaPresente(X2, Y, C), coloreComputer(C), pedinaStabile(XR, Y, 16), angoloX(XR, Y, XA, YA), posizioneLibera(XA, YA). [4 : 13]
+:~ posizionamento(X, Y), stessaDiagonale(X, Y, X2, Y2, XR, YR), pedinaPresente(X2, Y2, C), coloreComputer(C), pedinaStabile(XR, YR, 16), angoloX(XR, YR, XA, YA), posizioneLibera(XA, YA). [4 : 13]
+:~ posizionamento(X, Y), pedinaStabile(X, Y, 16), angoloX(X, Y, XA, YA), posizioneLibera(XA, YA). [2 : 13]
 
+%conta quanti avversari ci sono sulla riga 0 e 7
+contaAvversariRiga(Quanti, 0):- #count{C : pedinaPresente(0, C, Ca), coloreGiocatore(Ca)} = Quanti, dimensione(Quanti).
+contaAvversariRiga(Quanti, 7):- #count{C : pedinaPresente(7, C, Ca), coloreGiocatore(Ca)} = Quanti, dimensione(Quanti).
 
+%conta quanti avversari ci sono sulla colonna 0 e 7
+contaAvversariColonna(Quanti, 0):- #count{R : pedinaPresente(R, 0, Ca), coloreGiocatore(Ca)} = Quanti, dimensione(Quanti).
+contaAvversariColonna(Quanti, 7):- #count{R : pedinaPresente(R, 7, Ca), coloreGiocatore(Ca)} = Quanti, dimensione(Quanti).
 
 
 % se può mettere in una posizione ad un bordo e non ci sono pedine in quel bordo
-:~ posizioneNonScelta(_, 0), colonnaSenzaPedine(0). [1 : 3]
-:~ posizioneNonScelta(_, 7), colonnaSenzaPedine(7). [1 : 1]
-:~ posizioneNonScelta(0, _), rigaSenzaPedine(0). [1 : 1]
-:~ posizioneNonScelta(7, _), rigaSenzaPedine(7). [1 : 1]
+:~ NonPosizionamento(_, 0), colonnaSenzaPedine(0). [1 : 10]
+:~ NonPosizionamento(_, 7), colonnaSenzaPedine(7). [1 : 10]
+:~ NonPosizionamento(0, _), rigaSenzaPedine(0). [1 : 10]
+:~ NonPosizionamento(7, _), rigaSenzaPedine(7). [1 : 10]
+
+:~ posizionamento(Riga, 0), Riga2 = Riga + 2, pedinaPresente(Riga2, 1, C), coloreComputer(C), Riga1 = Riga + 1, posizioneLibera(Riga1, 0). [2 : 10]
+:~ posizionamento(Riga, 0), Riga = Riga2 + 2, pedinaPresente(Riga2, 1, C), coloreComputer(C), Riga = Riga1 + 1, posizioneLibera(Riga1, 0). [2 : 10]
+:~ posizionamento(Riga, 7), Riga2 = Riga + 2, pedinaPresente(Riga2, 8, C), coloreComputer(C), Riga1 = Riga + 1, posizioneLibera(Riga1, 7). [2 : 10]
+:~ posizionamento(Riga, 7), Riga = Riga2 + 2, pedinaPresente(Riga2, 8, C), coloreComputer(C), Riga = Riga1 + 1, posizioneLibera(Riga1, 7). [2 : 10]
+:~ posizionamento(0, Colonna), Colonna2 = Colonna + 2, pedinaPresente(1, Colonna2, C), coloreComputer(C), Colonna1 = Colonna + 1, posizioneLibera(0, Colonna1). [2 : 10]
+:~ posizionamento(0, Colonna), Colonna = Colonna2 + 2, pedinaPresente(1, Colonna2, C), coloreComputer(C), Colonna = Colonna1 + 1, posizioneLibera(0, Colonna1). [2 : 10]
+:~ posizionamento(7, Colonna), Colonna2 = Colonna + 2, pedinaPresente(8, Colonna2, C), coloreComputer(C), Colonna1 = Colonna + 1, posizioneLibera(7, Colonna1). [2 : 10]
+:~ posizionamento(7, Colonna), Colonna = Colonna2 + 2, pedinaPresente(8, Colonna2, C), coloreComputer(C), Colonna = Colonna1 + 1, posizioneLibera(7, Colonna1). [2 : 10]
+
+
+
+
+:~ posizionamento(Riga, Colonna), Riga <> 0, Riga <> 7, Colonna <> 0, Colonna <> 7. [1 : 12]
+:~ posizionamento(0, Colonna), contaAvversariRiga(QuantiAvv, 0), quanti_ne_mangia_riga(QuantiMangiati), QuantiMangiati > 0, QuantiMangiati <> QuantiAvv. [2 : 12]
+:~ posizionamento(7, Colonna), contaAvversariRiga(QuantiAvv, 7), quanti_ne_mangia_riga(QuantiMangiati), QuantiMangiati > 0, QuantiMangiati <> QuantiAvv. [2 : 12]
+:~ posizionamento(Riga, 0), contaAvversariColonna(QuantiAvv, 0), quanti_ne_mangia_colonna(QuantiMangiati), QuantiMangiati > 0, QuantiMangiati <> QuantiAvv. [2 : 12]
+:~ posizionamento(Riga, 7), contaAvversariColonna(QuantiAvv, 7), quanti_ne_mangia_colonna(QuantiMangiati), QuantiMangiati > 0, QuantiMangiati <> QuantiAvv. [2 : 12]
+:~ posizionamento(0, Colonna), contaAvversariRiga(QuantiAvv, 0), quanti_ne_mangia_riga(QuantiMangiati), QuantiMangiati = 0, QuantiAvv > 0. [2 : 12]
+:~ posizionamento(7, Colonna), contaAvversariRiga(QuantiAvv, 7), quanti_ne_mangia_riga(QuantiMangiati), QuantiMangiati = 0, QuantiAvv > 0. [2 : 12]
+:~ posizionamento(Riga, 0), contaAvversariColonna(QuantiAvv, 0), quanti_ne_mangia_colonna(QuantiMangiati), QuantiMangiati = 0, QuantiAvv > 0. [2 : 12]
+:~ posizionamento(Riga, 7), contaAvversariColonna(QuantiAvv, 7), quanti_ne_mangia_colonna(QuantiMangiati), QuantiMangiati = 0, QuantiAvv > 0. [2 : 12]
+:~ posizionamento(Riga, 0), contaAvversariColonna(0, 0). [1 : 12]
+:~ posizionamento(Riga, 7), contaAvversariColonna(0, 7). [1 : 12]
+:~ posizionamento(0, Colonna), contaAvversariRiga(0, 0). [1 : 12]
+:~ posizionamento(7, Colonna), contaAvversariRiga(0, 7). [1 : 12]
+
+
+
+:~ NonPosizionamento(Riga, 0), RigaB = Riga + 1, nonPedinaAvversario(RigaB, 0), Riga = RigaA + 1, nonPedinaAvversario(RigaA, 0). [1 : 6]
+:~ NonPosizionamento(Riga, 7), RigaB = Riga + 1, nonPedinaAvversario(RigaB, 7), Riga = RigaA + 1, nonPedinaAvversario(RigaA, 7). [1 : 6]
+:~ NonPosizionamento(0, Colonna), ColonnaD = Colonna + 1, nonPedinaAvversario(0, ColonnaD), Colonna = ColonnaS + 1, nonPedinaAvversario(0, ColonnaS). [1 : 6]
+:~ NonPosizionamento(7, Colonna), ColonnaD = Colonna + 1, nonPedinaAvversario(7, ColonnaD), Colonna = ColonnaS + 1, nonPedinaAvversario(7, ColonnaS). [1 : 6]
+
+nonPedinaAvversario(Riga, Colonna) :- posizioneLibera(Riga, Colonna).
+nonPedinaAvversario(Riga, Colonna) :- pedinaPresente(Riga, Colonna, C), coloreComputer(C).
+
+
+
+:~ NonPosizionamento(Riga, 0), RigaB = Riga + 1, pedinaPresente(RigaB, 0, Ca), Riga = RigaA + 1, pedinaPresente(RigaA, 0, Ca), coloreGiocatore(Ca). [1 : 6]
+:~ NonPosizionamento(Riga, 7), RigaB = Riga + 1, pedinaPresente(RigaB, 7, Ca), Riga = RigaA + 1, pedinaPresente(RigaA, 7, Ca), coloreGiocatore(Ca). [1 : 6]
+:~ NonPosizionamento(0, Colonna), ColonnaD = Colonna + 1, pedinaPresente(0, ColonnaD, Ca), Colonna = ColonnaS + 1, pedinaPresente(0, ColonnaS, Ca), coloreGiocatore(Ca). [1 : 6]
+:~ NonPosizionamento(7, Colonna), ColonnaD = Colonna + 1, pedinaPresente(7, ColonnaD, Ca), Colonna = ColonnaS + 1, pedinaPresente(7, ColonnaS, Ca), coloreGiocatore(Ca). [1 : 6]
+
+
+% se non ci sono pedine in un bordo lui non deve mettere nelle celle subito prima del bordo
+% perche' altrimenti permetterebbe all'avversario di mettere per primo una pedina sul bordo
+:~ colonnaSenzaPedine(0), posizionamento(_, 1). [1 : 4]
+:~ colonnaSenzaPedine(7), posizionamento(_, 6). [1 : 4]
+:~ rigaSenzaPedine(0), posizionamento(1, _). [1 : 4]
+:~ rigaSenzaPedine(7), posizionamento(6, _). [1 : 4]
