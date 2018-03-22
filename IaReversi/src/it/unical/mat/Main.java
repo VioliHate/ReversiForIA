@@ -248,7 +248,7 @@ public class Main extends Application {
 					timePoint.play();
 
 
-					if (Board.hasGameEnded()) {
+					if (Board.hasGameEnded() || Board.blackCounter()==0 || Board.whiteCounter()==0) {
 
 						String winner = "";
 						boolean haveTied = false;
