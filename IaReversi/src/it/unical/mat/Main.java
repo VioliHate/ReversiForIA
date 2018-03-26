@@ -172,7 +172,7 @@ public class Main extends Application {
 			final Pane play= (Pane) loader.load();
 
 			//visualizza il Pane in una finestra secondaria
-			Scene secondaryScene = new Scene(play, 250, 390);
+			Scene secondaryScene = new Scene(play, 250, 450);
 			Stage secondaryStage = new Stage();
 			secondaryStage.setTitle("Rules");
 			secondaryStage.setScene(secondaryScene);
@@ -202,7 +202,7 @@ public class Main extends Application {
 			final Pane play= (Pane) loader.load();
 
 			//visualizza il Pane in una finestra secondaria
-			Scene secondaryScene = new Scene(play, 250, 210);
+			Scene secondaryScene = new Scene(play, 280, 210);
 			Stage secondaryStage = new Stage();
 			secondaryStage.setTitle("About");
 			secondaryStage.setScene(secondaryScene);
@@ -295,7 +295,9 @@ public class Main extends Application {
 		currentTurn = (currentTurn == PieceType.BLACK) ? PieceType.WHITE : PieceType.BLACK;
 	}
 	public static void updateOwnerTurnTitle() { // 
-		ownerTurnLabel.setText(currentTurn + " Player's Turn");
+		ownerTurnLabel.setText("Turno del giocatore\n"
+				+ ""+currentTurn);
+		
 	} 
 
 	public static void updatePoint(int blackPoint,int whitePoint) {
